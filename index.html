@@ -1,0 +1,1379 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F2E47">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<meta name="application-name" content="Formulir DO D745">
+<meta name="apple-mobile-web-app-title" content="Formulir DO">
+<meta name="description" content="Formulir data DO/SPK D745 Tomohon — input, kirim ke Google Sheet, cetak A4.">
+<title>Formulir Data DO — D745 Tomohon</title>
+<style>
+:root{--navy:#0F2E47;--navy2:#16405f;--merah:#E60012;--garis:#d7dee6;--bg:#eef2f6;--putih:#fff;--teks:#12212e;--abu:#6b7a89}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--teks);font-size:14px;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+header{position:sticky;top:0;z-index:30;background:var(--navy);color:#fff;padding:calc(9px + env(safe-area-inset-top,0px)) 12px 0 12px}
+.hd{display:flex;align-items:center;gap:10px}
+.hd b{font-size:15px}
+.hd small{display:block;font-size:11px;opacity:.75;font-weight:400}
+.logo{width:30px;height:30px;border-radius:7px;background:var(--merah);display:grid;place-items:center;font-weight:800;font-size:11px;flex:0 0 auto}
+nav{display:flex;gap:2px;margin-top:9px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav button{flex:0 0 auto;background:transparent;border:0;color:#cddbe7;padding:9px 13px;font-size:13px;font-weight:600;border-bottom:3px solid transparent;cursor:pointer;font-family:inherit}
+nav button.on{color:#fff;border-bottom-color:var(--merah)}
+main{padding:12px 12px 96px 12px;max-width:900px;margin:0 auto}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--putih);border:1px solid var(--garis);border-radius:10px;padding:12px;margin-bottom:11px}
+.card>h3{margin:0 0 10px 0;font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--navy);display:flex;align-items:center;gap:7px}
+.card>h3::before{content:"";width:4px;height:14px;background:var(--merah);border-radius:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f.lebar{grid-column:1/-1}
+.f label{font-size:10px;font-weight:700;letter-spacing:.3px;color:var(--abu);text-transform:uppercase}
+.f input,.f select,.f textarea{width:100%;min-width:0;font-family:inherit;font-size:13px;padding:7px 8px;border:1px solid var(--garis);border-radius:7px;background:#fbfcfd;color:var(--teks)}
+html.ios .f input,html.ios .f select,html.ios .f textarea{font-size:16px}
+.f input:focus,.f select:focus,.f textarea:focus{outline:2px solid var(--navy2);outline-offset:-1px;background:#fff}
+.f textarea{resize:vertical;min-height:52px}
+.f input[readonly],.f input:disabled,.f select:disabled,.f textarea:disabled{background:#eef2f6;color:#93a2b1}
+.f .hint{font-size:10px;color:var(--abu)}
+.mati{opacity:.55}
+.tbl-bayar{width:100%;border-collapse:collapse}
+.tbl-bayar td{padding:3px 2px}
+.tbl-bayar td:first-child{width:62px;font-size:11px;font-weight:700;color:var(--abu)}
+.tbl-bayar input{width:100%;min-width:0;font-size:13px;padding:6px 7px;border:1px solid var(--garis);border-radius:6px;background:#fbfcfd;font-family:inherit}
+html.ios .tbl-bayar input{font-size:16px}
+.tbl-bayar input:disabled{background:#eef2f6;color:#93a2b1}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--garis);padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)) 10px;display:flex;gap:7px;justify-content:center}
+.btn{font-family:inherit;font-size:13px;font-weight:700;padding:11px 14px;border-radius:8px;border:1px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer;flex:1;max-width:230px}
+.btn.alt{background:#fff;color:var(--navy)}
+.btn.merah{background:var(--merah);border-color:var(--merah)}
+.btn.kecil{flex:0 0 auto;padding:7px 11px;font-size:12px;max-width:none}
+.btn:disabled{opacity:.5}
+.pilih{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{display:flex;align-items:center;gap:6px;border:1px solid var(--garis);background:#fff;border-radius:20px;padding:6px 11px;font-size:12px;cursor:pointer;user-select:none}
+.chip input{accent-color:var(--merah)}
+.chip.on{border-color:var(--navy);background:#eaf1f7;font-weight:600}
+.riw{border:1px solid var(--garis);border-radius:8px;padding:9px;margin-bottom:7px;background:#fff;display:flex;gap:9px;align-items:center}
+.riw div{flex:1;min-width:0}
+.riw b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.riw small{color:var(--abu);font-size:11px}
+.kosong{text-align:center;color:var(--abu);padding:26px 10px;font-size:13px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:82px;background:var(--navy);color:#fff;padding:10px 15px;border-radius:22px;font-size:13px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88vw;text-align:center}
+.toast.on{opacity:1}
+.toast.err{background:var(--merah)}
+.info{font-size:12px;color:var(--abu);line-height:1.5}
+.info code{background:#e7edf3;padding:1px 4px;border-radius:4px;font-size:11px;word-break:break-all}
+pre.kode{background:#0f2e47;color:#d7e6f5;padding:10px;border-radius:8px;font-size:10.5px;line-height:1.45;overflow:auto;max-height:260px;white-space:pre}
+.stat{display:inline-block;font-size:11px;padding:3px 8px;border-radius:12px;background:#e7edf3;color:var(--abu)}
+.stat.ok{background:#e2f3e7;color:#1c6b34}
+.stat.bad{background:#fde8e9;color:#a3121a}
+/* ================= LEMBAR CETAK ================= */
+#pvWrap{background:#5d6b78;border-radius:9px;padding:10px;overflow:auto;max-height:68vh;-webkit-overflow-scrolling:touch}
+#pvInner{transform-origin:top left;margin:0 auto}
+.sheet{width:200mm;height:287mm;background:#fff;margin:0 auto 8px auto;position:relative;color:#000;overflow:hidden}
+.sheet .isi{padding:0 2mm}
+.sheet.serif{font-family:"Times New Roman",Times,serif;font-size:calc(11.5pt*var(--fk,1));line-height:1.32}
+.sheet.sans{font-family:Calibri,Candara,"Segoe UI",Arial,sans-serif;font-size:calc(11.5pt*var(--fk,1));line-height:1.34}
+.sheet.mini{font-family:Arial,Helvetica,sans-serif;font-size:calc(7.6pt*var(--fk,1));line-height:1.15}
+.sheet *{box-sizing:border-box}
+.sheet table{border-collapse:collapse}
+.sheet td,.sheet th{vertical-align:top;padding:0}
+.ct{text-align:center}.rt{text-align:right}.b{font-weight:bold}.u{text-decoration:underline}
+.jd{text-align:center;font-weight:bold}
+.dot{border-bottom:1px dotted #000;display:inline-block;min-height:1em;width:100%}
+.line{border-bottom:1px solid #000;display:inline-block;width:100%;min-height:1em}
+.ttdnama{border-top:1px solid #000;display:inline-block;min-width:52mm;text-align:center}
+table.iso td{padding:.6mm 0}
+/* checklist */
+.cl{font-family:Arial,Helvetica,sans-serif}
+.cl table{width:100%;border-collapse:collapse}
+.cl td{border:.6pt solid #000;padding:.5mm 1mm;vertical-align:middle;line-height:1.1}
+.cl td.nb{border:0}
+.cl .bar1{background:#dce6f1;font-weight:bold;text-align:center;border:.6pt solid #000;padding:.7mm}
+.cl .sub{font-weight:bold;border:0;padding:1.2mm 0 .6mm 0}
+.cl .kc{background:#dce6f1;font-weight:bold;text-align:center;width:20mm}
+.cl .hitam{background:#000}
+.cl .kotak{border:.6pt solid #000;height:4.2mm}
+.blok{border:.8pt solid #000;padding:1.2mm}
+@media print{
+  html,body{background:#fff;margin:0;padding:0}
+  header,nav,.bar,#pvBar,.card,.toast,main>.panel:not(#p-cetak){display:none!important}
+  main{padding:0;max-width:none}
+  #pvWrap{background:#fff;padding:0;overflow:visible;max-height:none;height:auto!important}
+  #pvInner{transform:none!important;width:auto!important}
+  .sheet{margin:0;page-break-after:always;break-after:page;box-shadow:none}
+  .sheet:last-child{page-break-after:auto;break-after:auto}
+}
+@page{size:A4;margin:5mm}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo">DO</div>
+    <div><b>Formulir Data DO</b><small>D745 Tomohon — input SPK, kirim ke Sheet, cetak A4</small></div>
+  </div>
+  <nav>
+    <button data-p="form" class="on">Formulir</button>
+    <button data-p="cetak">Cetak</button>
+    <button data-p="data">Riwayat</button>
+    <button data-p="set">Pengaturan</button>
+  </nav>
+</header>
+<main>
+<section class="panel on" id="p-form">
+
+  <div class="card">
+    <h3>SPK &amp; Sales</h3>
+    <div class="grid">
+      <div class="f"><label>TGL Plan DO</label><input type="date" id="tglPlanDO"></div>
+      <div class="f"><label>TGL Plan DEC</label><input type="date" id="tglPlanDEC"></div>
+      <div class="f"><label>Nama Salesman</label><select id="sales"></select></div>
+      <div class="f"><label>NPK Sales</label><input id="npk" inputmode="numeric"></div>
+      <div class="f"><label>SS (Sales Supervisor)</label><select id="ss"></select></div>
+      <div class="f"><label>NPK SS</label><input id="npkSS" inputmode="numeric"></div>
+      <div class="f"><label>Nomor SPK</label><input id="noSPK" inputmode="numeric"></div>
+      <div class="f"><label>TGL SPK</label><input type="date" id="tglSPK"></div>
+      <div class="f"><label>Kode Paket</label><select id="kodePaket"><option value=""></option><option>REG 26</option><option>REG SO VIP 26</option><option>REG CSH TLO 26</option></select></div>
+      <div class="f"><label>Lokasi DEC</label><select id="lokasiDEC"><option value=""></option><option>D740</option><option>D741</option><option>D743</option><option>D744</option><option>D745</option></select></div>
+      <div class="f"><label>No Opportunity</label><input id="noOpp" inputmode="numeric"></div>
+      <div class="f"><label>No Customer</label><input id="noCust" inputmode="numeric"></div>
+      <div class="f lebar"><label>Nomor Quotation (Kode CRM 3)</label><input id="noQuot"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Data pemesan</h3>
+    <div class="grid">
+      <div class="f"><label>Jenis pemesan</label><select id="tipeCust"><option>PERORANGAN</option><option>PERUSAHAAN</option><option>PEMERINTAHAN</option></select><span class="hint">Tidak dicetak; mengatur kolom checklist &amp; margin surat kuasa.</span></div>
+      <div class="f"><label>No WA</label><input id="wa" inputmode="tel"></div>
+      <div class="f lebar"><label>Nama SPK (pemohon)</label><input id="namaSPK" autocomplete="off"></div>
+      <div class="f lebar"><label>Alamat pemohon</label><textarea id="alamatPemohon"></textarea></div>
+      <div class="f"><label>Nomor KTP pemohon</label><input id="ktpPemohon" inputmode="numeric"></div>
+      <div class="f"><label>Pekerjaan pemohon</label><input id="kerjaPemohon"></div>
+      <div class="f lebar"><label>Email</label><input id="email" inputmode="email"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Data STNK</h3>
+    <div class="pilih"><label class="chip" id="chipSama"><input type="checkbox" id="stnkSama"> Nama &amp; alamat STNK sama dengan pemohon</label></div>
+    <div class="grid">
+      <div class="f lebar"><label>Nama STNK</label><input id="namaSTNK"></div>
+      <div class="f lebar"><label>Alamat STNK (lengkap)</label><textarea id="alamatSTNK"></textarea></div>
+      <div class="f"><label>Kota/Kab</label><select id="kota"></select></div>
+      <div class="f"><label>Nomor KTP STNK</label><input id="ktpSTNK" inputmode="numeric"></div>
+      <div class="f"><label>Pekerjaan nama STNK</label><input id="kerjaSTNK"></div>
+      <div class="f lebar"><label>Alasan beda nama STNK (abaikan jika sama)</label><textarea id="alasanBeda"></textarea></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Kendaraan</h3>
+    <div class="pilih">
+      <label class="chip on" id="chipSulut"><input type="checkbox" id="stokSulut" checked> Stok plant Sulut saja</label>
+      <span class="stat" id="statStok">Stok belum dimuat</span>
+      <button class="btn alt kecil" id="bMuatStok">Muat ulang stok</button>
+    </div>
+    <div class="grid">
+      <div class="f lebar"><label>1. Type</label><select id="type"></select></div>
+      <div class="f lebar"><label>2. Warna</label><select id="warna"></select></div>
+      <div class="f lebar"><label>3. Nomor rangka</label><select id="rangka"></select></div>
+      <div class="f"><label>4. Nomor mesin</label><input id="mesin" style="text-transform:uppercase"></div>
+      <div class="f"><label>5. Isi silinder</label><input id="silinder" inputmode="numeric"></div>
+      <div class="f"><label>Thn kendaraan</label><input id="thn" inputmode="numeric"></div>
+      <div class="f"><label>Jenis</label><input id="jenis" list="dlJenis"><datalist id="dlJenis"><option>MOBIL BARANG</option><option>MOBIL PENUMPANG</option></datalist></div>
+      <div class="f"><label>QTY</label><input id="qty" inputmode="numeric" value="1"></div>
+      <div class="f"><label>Posisi unit</label><select id="posisi"></select></div>
+      <div class="f"><label>Req faktur pajak</label><select id="reqFaktur"><option value=""></option><option>YA</option><option>TIDAK</option></select></div>
+      <div class="f"><label>Daihatsu Care</label><select id="care"><option value=""></option><option>YA</option><option>TIDAK</option></select></div>
+    </div>
+    <div class="info" style="margin-top:8px">Type, warna, dan nomor rangka diambil langsung dari sheet <b>Stok</b>. Kalau nomor rangka belum ada di daftar, matikan centang “Stok plant Sulut saja” atau ketik manual lewat tombol di bawah.</div>
+    <div style="margin-top:7px"><button class="btn alt kecil" id="bManual">Isi unit manual</button></div>
+  </div>
+
+  <div class="card">
+    <h3>Harga &amp; cara bayar</h3>
+    <div class="grid">
+      <div class="f"><label>OTR</label><input id="otr" inputmode="numeric" class="rp"></div>
+      <div class="f"><label>Diskon</label><input id="diskon" inputmode="numeric" class="rp"></div>
+      <div class="f"><label>Cash / Kredit</label><select id="cashKredit"><option value=""></option><option>CASH</option><option>KREDIT</option></select></div>
+      <div class="f"><label>Leasing</label><select id="leasing"></select></div>
+      <div class="f"><label>Tenor (tahun)</label><input id="tenor"></div>
+      <div class="f"><label>Uang muka PO</label><input id="um" inputmode="numeric" class="rp"></div>
+      <div class="f"><label>Angsuran</label><input id="angsuran" inputmode="numeric" class="rp"></div>
+      <div class="f"><label>%DP / %DP NEX (otomatis)</label><input id="dpInfo" readonly></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Pembayaran uang muka</h3>
+    <table class="tbl-bayar"><tbody id="tbBayar"></tbody></table>
+    <div class="f" style="margin-top:8px"><label>Total bayar (otomatis)</label><input id="totalBayar" readonly></div>
+  </div>
+
+  <div class="card" id="cardAlih">
+    <h3>Pengalihan dana</h3>
+    <div class="grid">
+      <div class="f"><label>Apakah ada pengalihan dana?</label><select id="pengalihan"><option value=""></option><option>YA</option><option>TIDAK</option></select></div>
+      <div class="f"><label>Hubungan keluarga alih dana</label><input id="hubungan"></div>
+      <div class="f lebar"><label>Nama pengirim dana</label><input id="namaKirim"></div>
+      <div class="f lebar"><label>Alamat pengirim dana</label><textarea id="alamatKirim"></textarea></div>
+      <div class="f"><label>No KTP pengirim dana</label><input id="ktpKirim" inputmode="numeric"></div>
+      <div class="f"><label>No telp / HP pengirim dana</label><input id="telpKirim" inputmode="tel"></div>
+      <div class="f"><label>No SPK lama (jika ada)</label><input id="spkLama"></div>
+      <div class="f"><label>Pembayaran via</label><input id="viaBayar" placeholder="Bank / Cash"></div>
+    </div>
+    <table class="tbl-bayar" style="margin-top:8px"><tbody id="tbAlih"></tbody></table>
+  </div>
+
+  <div class="card">
+    <h3>Pembayaran lewat agen / outlet</h3>
+    <div class="grid">
+      <div class="f"><label>Agen</label><input id="agen"></div>
+      <div class="f"><label>Nama agen / toko</label><input id="agenToko"></div>
+      <div class="f"><label>Nama akun transfer</label><input id="agenAkun"></div>
+      <div class="f"><label>Nominal</label><input id="agenNominal" inputmode="numeric" class="rp"></div>
+      <div class="f lebar"><label>Alamat agen</label><textarea id="agenAlamat"></textarea></div>
+      <div class="f"><label>Tanggal bayar agen</label><input type="date" id="agenTgl"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Catatan surat</h3>
+    <div class="grid">
+      <div class="f"><label>Program (ikut kode paket)</label><input id="program" readonly></div>
+      <div class="f"><label>Cashback / prog. tambahan (ikut diskon)</label><input id="progTambah" readonly></div>
+      <div class="f"><label>Tempat/tgl lahir (surat beda TTD)</label><input id="ttlCust" placeholder="Manado / 28 Juni 1972"></div>
+      <div class="f"><label>Alasan perbedaan tanda tangan</label><input id="alasanTTD"></div>
+    </div>
+  </div>
+</section>
+<section class="panel" id="p-cetak">
+  <div class="card" id="pvBar">
+    <h3>Lembar yang dicetak</h3>
+    <div class="pilih" id="pilihDok"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn alt kecil" id="bSemua">Pilih semua</button>
+      <button class="btn alt kecil" id="bTdkSatu">Kosongkan</button>
+      <button class="btn alt kecil" id="bZoomOut">−</button>
+      <button class="btn alt kecil" id="bZoomIn">+</button>
+      <button class="btn alt kecil" id="bZoomPas">Pas layar</button>
+    </div>
+  </div>
+  <div id="pvWrap"><div id="pvInner"></div></div>
+</section>
+
+<section class="panel" id="p-data">
+  <div class="card"><h3>Data tersimpan di perangkat ini</h3><div id="daftarRiw"></div></div>
+  <div class="card">
+    <h3>Cadangan</h3>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn alt kecil" id="bEkspor">Unduh cadangan (.json)</button>
+      <button class="btn alt kecil" id="bImpor">Muat cadangan</button>
+      <input type="file" id="fileImpor" accept="application/json" hidden>
+    </div>
+    <div class="info" style="margin-top:8px">Cadangan berisi isian yang tersimpan di aplikasi ini, bukan isi Google Sheet.</div>
+  </div>
+</section>
+
+<section class="panel" id="p-set">
+  <div class="card" id="cardPasang">
+    <h3>Pasang aplikasi</h3>
+    <div class="info" id="infoPasang">Memeriksa…</div>
+    <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+      <button class="btn alt kecil" id="bPasang" hidden>Pasang di perangkat ini</button>
+      <button class="btn alt kecil" id="bPerbarui">Periksa pembaruan</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Sambungan ke Google Sheet</h3>
+    <div class="f lebar"><label>URL Web App (Apps Script)</label><input id="urlWA" placeholder="https://script.google.com/macros/s/..../exec"></div>
+    <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+      <button class="btn alt kecil" id="bSimpanURL">Simpan URL</button>
+      <button class="btn alt kecil" id="bUji">Uji sambungan</button>
+      <button class="btn alt kecil" id="bSalinKode">Salin kode Apps Script</button>
+    </div>
+    <div class="info" style="margin-top:10px">Baris ditulis ke spreadsheet data DO <code>18jNLbOv…OxyNk</code> sheet <code>gid 1977297172</code>, di bawah baris terakhir.</div>
+    <pre class="kode" id="kodeGS"></pre>
+  </div>
+  <div class="card">
+    <h3>Sumber stok kendaraan</h3>
+    <div class="f lebar"><label>URL / ID spreadsheet stok</label><input id="urlStok"></div>
+    <div class="f lebar" style="margin-top:8px"><label>Nama sheet</label><input id="namaSheetStok"></div>
+    <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+      <button class="btn alt kecil" id="bSimpanStok">Simpan &amp; muat ulang</button>
+      <button class="btn alt kecil" id="bStokCsv">Muat dari berkas CSV</button>
+      <input type="file" id="fileStok" accept=".csv,text/csv" hidden>
+    </div>
+    <div class="info" style="margin-top:9px" id="infoStok"></div>
+  </div>
+  <div class="card">
+    <h3>Nama pejabat di lembar cetak</h3>
+    <div class="grid">
+      <div class="f"><label>Kepala cabang</label><input id="setKacab"></div>
+      <div class="f"><label>ADH</label><input id="setADH"></div>
+      <div class="f"><label>Kepala wilayah</label><input id="setKawil"></div>
+      <div class="f"><label>Wilayah (untuk internal memo)</label><input id="setWilayah" placeholder="IBT"></div>
+      <div class="f"><label>Cabang / sales point</label><input id="setCabang"></div>
+      <div class="f"><label>Kode cabang</label><input id="setKodeCabang" placeholder="D744"></div>
+      <div class="f lebar"><label>Alamat cabang</label><input id="setAlamatCabang"></div>
+      <div class="f lebar"><label>Kota tanda tangan</label><input id="setKota"></div>
+    </div>
+    <div style="margin-top:9px"><button class="btn alt kecil" id="bSimpanSet">Simpan pengaturan</button></div>
+  </div>
+  <div class="card">
+    <h3>Daftar salesman &amp; NPK</h3>
+    <div class="info" style="margin-bottom:8px">Satu baris satu orang, format <code>NAMA|NPK</code>.</div>
+    <div class="f lebar"><textarea id="setSales" style="min-height:150px;font-size:12px"></textarea></div>
+    <div style="margin-top:9px"><button class="btn alt kecil" id="bSimpanSales">Simpan daftar salesman</button></div>
+  </div>
+  <div class="card">
+    <h3>Daftar SS &amp; NPK</h3>
+    <div class="info" style="margin-bottom:8px">Satu baris satu orang, format <code>NAMA|NPK</code>. Baris pertama dipakai sebagai bawaan.</div>
+    <div class="f lebar"><textarea id="setSSList" style="min-height:70px;font-size:12px"></textarea></div>
+    <div style="margin-top:9px"><button class="btn alt kecil" id="bSimpanSS">Simpan daftar SS</button></div>
+  </div>
+  <div class="card">
+    <h3>Daftar leasing</h3>
+    <div class="info" style="margin-bottom:8px">Satu baris satu leasing. Tambah sendiri kalau ada leasing baru.</div>
+    <div class="f lebar"><textarea id="setLeasing" style="min-height:110px;font-size:12px"></textarea></div>
+    <div style="margin-top:9px"><button class="btn alt kecil" id="bSimpanLeasing">Simpan daftar leasing</button></div>
+  </div>
+</section>
+</main>
+
+<div class="bar" id="barForm">
+  <button class="btn alt" id="bBaru">Baru</button>
+  <button class="btn" id="bSimpan">Simpan</button>
+  <button class="btn merah" id="bKirim">Kirim ke Sheet</button>
+</div>
+<div class="bar" id="barCetak" style="display:none">
+  <button class="btn alt" id="bKembali">Formulir</button>
+  <button class="btn merah" id="bCetak">Cetak / PDF</button>
+</div>
+<div class="toast" id="toast"></div>
+<script type="text/plain" id="srcGS">
+/** Formulir Data DO — D745 Tomohon
+ *  Cara pakai: buka spreadsheet tujuan > Ekstensi > Apps Script > tempel kode ini,
+ *  lalu Deploy > New deployment > Web app > Execute as: Me, Who has access: Anyone.
+ *  Salin URL yang berakhiran /exec ke tab Pengaturan aplikasi.
+ */
+var ID_SHEET = '18jNLbOvGuOfOmCr2y6XSm5-XlSYSqJ98lfSn_6OxyNk';
+var GID = 1977297172;
+
+function sheetTujuan() {
+  var ss = SpreadsheetApp.openById(ID_SHEET);
+  var s = ss.getSheets().filter(function (x) { return x.getSheetId() === GID; })[0];
+  if (!s) throw new Error('Sheet dengan gid ' + GID + ' tidak ditemukan');
+  return s;
+}
+function balas(o) {
+  return ContentService.createTextOutput(JSON.stringify(o))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function doGet(e) {
+  try {
+    var s = sheetTujuan();
+    return balas({ ok: true, sheet: s.getName(), baris: s.getLastRow() });
+  } catch (err) { return balas({ ok: false, pesan: String(err) }); }
+}
+function doPost(e) {
+  var kunci = LockService.getScriptLock();
+  try {
+    kunci.waitLock(20000);
+    var p = JSON.parse(e.postData.contents);
+    if (!p.baris || !p.baris.length) throw new Error('Data kosong');
+    var s = sheetTujuan();
+    var baris = s.getLastRow() + 1;
+    var no = 1;
+    if (baris > 2) {
+      var prev = s.getRange(baris - 1, 1).getValue();
+      no = (typeof prev === 'number' && prev) ? prev + 1 : new Date();
+    }
+    var nilai = [no].concat(p.baris);
+    s.getRange(baris, 1, 1, nilai.length).setValues([nilai]);
+    return balas({ ok: true, baris: baris });
+  } catch (err) {
+    return balas({ ok: false, pesan: String(err) });
+  } finally {
+    try { kunci.releaseLock(); } catch (x) {}
+  }
+}
+</script>
+<script>
+/* ================= acuan ================= */
+const KOTA=["BITUNG","BOLMONG","BOLMUT","BOLSEL","BOLTIM","KOTAMOBAGU","MANADO","MINAHASA","MINSEL","MINUT","MITRA","SANGIHE","SITARO","TALAUD","TOMOHON"];
+const POSISI=["SIAP / READY DI SHOWROOM","MASIH DALAM PERJALANAN"];
+const PLANT_SULUT=["D740","D741","D743","D744","D745","D761"];
+const SALES_BAWAAN=`KRISNI JACKY ENRIKO SAROINSONG|28122
+ANDREY ALFONS LEMBANG|25888
+RIEDEL SCHWARS MATHEOS MONGINSIDI|68937
+NOVRITA VERONIKA ROTIKAN|68936
+JANSEN SAMUEL KASENDA|68247
+ERSA ANGELICA NATALIA RESSA|70903
+GERRY D LONTAAN|74249
+EXCELSIS DEO RIYAN RUUS|75620
+CLAUDIA CHRISTY SENDUK|83180
+JORDAN EDUARD LOMPOLIUW|84626
+JULIA RIANTI MOKOAGOUW|85677
+GLORIA WINONA KAWENGIAN|85706`;
+const SS_BAWAAN=`KRISNI J E SAROINSONG|28122`;
+const LEASING_BAWAAN=`CASH
+ACC
+DFS
+ADIRA
+MUF
+MTF
+BCAF`;
+const SET_BAWAAN={kacab:"SONNY Y LEMBONG",adh:"CHRISTIAN ABEDNEGO",kawil:"YODIYANTO",wilayah:"IBT",
+  cabang:"ASTRA DAIHATSU KOTAMOBAGU",kodeCabang:"D744",alamatCabang:"",kota:"Kotamobagu",
+  idStok:"105Fk4W_ocTGC63iFkHaC_ttMrTznsiluiEQvwUCIQ7s",sheetStok:"Stok"};
+const DOK=[["checklist","Checklist"],["pdi","Check Sheet PDI"],["kuasa","Surat Kuasa"],
+  ["alih","Pengalihan Dana"],["bedaStnk","Beda Data STNK/BPKB"],["bedaTtd","Beda Tanda Tangan KTP"],
+  ["agenSurat","Surat Pernyataan Agen"],["memo","Internal Memo Beda Nama"],["lebih","Pengembalian Lebih Bayar"]];
+const KOLOM=["tglPlanDO","tglPlanDEC","sales","namaSPK","namaSTNK","alamatSTNK","kota","qty","type","rangka","mesin","thn","silinder","warna","otr","diskon","cashKredit","leasing","tenor","um","posisi","reqFaktur","wa","care","lokasiDEC","noOpp","noCust","noSPK","tglSPK","kodePaket","ktpPemohon","ktpSTNK","kerjaPemohon","kerjaSTNK","alasanBeda","bayar1","tglBayar1","bayar2","tglBayar2","bayar3","tglBayar3","bayar4","tglBayar4","bayar5","tglBayar5","bayar6","tglBayar6","lanjutData","noQuot","email","pengalihan","namaKirim","alamatKirim","ktpKirim","telpKirim","spkLama","viaBayar","jml1","tglP1","jml2","tglP2","jml3","tglP3","hubungan","angsuran","dp","dpNex"];
+const TGL_KOLOM=["tglPlanDO","tglPlanDEC","tglSPK","tglBayar1","tglBayar2","tglBayar3","tglBayar4","tglBayar5","tglBayar6","tglP1","tglP2","tglP3"];
+const NUMERIK=["qty","otr","diskon","um","angsuran","bayar1","bayar2","bayar3","bayar4","bayar5","bayar6","jml1","jml2","jml3","silinder","thn"];
+const BULAN=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const BLNSGKT=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const HARI=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+
+/* ================= alat bantu ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], el=id=>document.getElementById(id);
+if(/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1))document.documentElement.classList.add("ios");
+function angka(v){const n=String(v==null?"":v).replace(/[^0-9-]/g,"");return n?parseInt(n,10):0;}
+function rp(v){const n=angka(v);return n?n.toLocaleString("id-ID"):"";}
+function esc(s){return String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function tglID(s,mode){if(!s)return "";const p=String(s).split("-");if(p.length<3)return s;
+  const d=new Date(+p[0],+p[1]-1,+p[2]);if(isNaN(d))return s;
+  const dd=String(d.getDate()).padStart(2,"0"),mm=String(d.getMonth()+1).padStart(2,"0");
+  if(mode==="panjang")return d.getDate()+" "+BULAN[d.getMonth()]+" "+d.getFullYear();
+  if(mode==="hari")return HARI[d.getDay()]+", "+d.getDate()+" "+BULAN[d.getMonth()]+" "+d.getFullYear();
+  if(mode==="harispasi")return HARI[d.getDay()]+" "+d.getDate()+" "+BULAN[d.getMonth()]+" "+d.getFullYear();
+  if(mode==="singkat")return dd+"/"+BLNSGKT[d.getMonth()]+"/"+String(d.getFullYear()).slice(2);
+  if(mode==="singkat4")return dd+"/"+BLNSGKT[d.getMonth()]+"/"+d.getFullYear();
+  return dd+"/"+mm+"/"+d.getFullYear();}
+function hariIni(mode){const d=new Date();return tglID(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"),mode);}
+const SATUAN=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];
+function tb(n){n=Math.floor(Math.abs(n));
+  if(n<12)return SATUAN[n];
+  if(n<20)return tb(n-10)+" Belas";
+  if(n<100)return tb(Math.floor(n/10))+" Puluh "+tb(n%10);
+  if(n<200)return "Seratus "+tb(n-100);
+  if(n<1000)return tb(Math.floor(n/100))+" Ratus "+tb(n%100);
+  if(n<2000)return "Seribu "+tb(n-1000);
+  if(n<1e6)return tb(Math.floor(n/1000))+" Ribu "+tb(n%1000);
+  if(n<1e9)return tb(Math.floor(n/1e6))+" Juta "+tb(n%1e6);
+  if(n<1e12)return tb(Math.floor(n/1e9))+" Milyar "+tb(n%1e9);
+  return tb(Math.floor(n/1e12))+" Triliun "+tb(n%1e12);}
+function terbilang(n){n=angka(n);if(!n)return "Nol Rupiah";return tb(n).replace(/\s+/g," ").trim()+" Rupiah";}
+function toast(t,err){const b=el("toast");b.textContent=t;b.className="toast on"+(err?" err":"");clearTimeout(toast.t);toast.t=setTimeout(()=>b.className="toast",2800);}
+function parseCSV(teks){const b=[];let f="",r=[],q=false;
+  for(let i=0;i<teks.length;i++){const c=teks[i];
+    if(q){ if(c==='"'){ if(teks[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if(c==='"')q=true;
+    else if(c===","){r.push(f);f="";}
+    else if(c==="\n"){r.push(f);b.push(r);r=[];f="";}
+    else if(c!=="\r")f+=c;}
+  if(f!==""||r.length){r.push(f);b.push(r);}
+  return b;}
+
+/* ================= state ================= */
+let PENGATURAN=Object.assign({},SET_BAWAAN);
+let DAFTAR_SALES=SALES_BAWAAN, DAFTAR_SS=SS_BAWAAN, DAFTAR_LEASING=LEASING_BAWAAN;
+let RIWAYAT=[], idAktif=null, STOK=[], STOK_WAKTU=0, manualUnit=false;
+
+function muatLokal(){try{
+  const s=localStorage.getItem("do2_set"); if(s)PENGATURAN=Object.assign({},SET_BAWAAN,JSON.parse(s));
+  const a=localStorage.getItem("do2_sales"); if(a)DAFTAR_SALES=a;
+  const b=localStorage.getItem("do2_ss"); if(b)DAFTAR_SS=b;
+  const c=localStorage.getItem("do2_leasing"); if(c)DAFTAR_LEASING=c;
+  const r=localStorage.getItem("do2_riwayat"); if(r)RIWAYAT=JSON.parse(r)||[];
+  const u=localStorage.getItem("do2_url"); if(u)el("urlWA").value=u;
+  const st=localStorage.getItem("do2_stok"); if(st){const j=JSON.parse(st);STOK=j.baris||[];STOK_WAKTU=j.waktu||0;}
+}catch(e){}}
+function simpanRiwayatLokal(){try{localStorage.setItem("do2_riwayat",JSON.stringify(RIWAYAT));}catch(e){toast("Penyimpanan perangkat penuh",1);}}
+function pecah(t){return t.split("\n").map(x=>x.trim()).filter(Boolean).map(x=>{const p=x.split("|");return{nama:(p[0]||"").trim(),npk:(p[1]||"").trim()};});}
+
+/* ================= stok ================= */
+function idSpreadsheet(v){const m=String(v||"").match(/[-\w]{25,}/);return m?m[0]:String(v||"").trim();}
+function simpanStok(baris,pesan){
+  STOK=baris;STOK_WAKTU=Date.now();
+  try{localStorage.setItem("do2_stok",JSON.stringify({waktu:STOK_WAKTU,baris:STOK}));}catch(e){}
+  isiType();statusStok(pesan);
+}
+function statusStok(pesan){
+  const n=STOK.length, s=el("statStok");
+  s.className="stat "+(n?"ok":"bad");
+  s.textContent=n?(n.toLocaleString("id-ID")+" unit"+(STOK_WAKTU?" · "+new Date(STOK_WAKTU).toLocaleDateString("id-ID"):"")):"Stok belum dimuat";
+  el("infoStok").innerHTML=n?("Terbaca <b>"+n.toLocaleString("id-ID")+"</b> unit"+(STOK_WAKTU?", terakhir dimuat "+new Date(STOK_WAKTU).toLocaleString("id-ID"):"")+"."+(pesan?" "+pesan:"")):("Belum ada data stok. "+(pesan||""));
+}
+function petakanStok(baris){
+  if(!baris.length)return [];
+  const hd=baris[0].map(x=>String(x).trim().toLowerCase());
+  const cari=(...k)=>{for(const kk of k){const i=hd.findIndex(h=>h===kk);if(i>=0)return i;}
+    for(const kk of k){const i=hd.findIndex(h=>h.includes(kk));if(i>=0)return i;}return -1;};
+  const iP=cari("plant"),iD=cari("material description","description"),iW=cari("sap color description","color description","warna"),
+    iR=cari("serial number","no. rangka","no rangka"),iM=cari("no. mesin","no mesin","engine"),iT=cari("construction year","tahun"),iL=cari("functional location","lokasi");
+  if(iD<0||iR<0)return [];
+  const out=[];
+  for(let i=1;i<baris.length;i++){const r=baris[i];if(!r||!r[iR])continue;
+    const d=String(r[iD]||"").trim(); if(!d)continue;
+    out.push({p:String(r[iP]||"").trim(),d:d,w:String(r[iW]||"").trim(),
+      r:String(r[iR]||"").trim(),m:String(r[iM]||"").trim(),
+      t:String(r[iT]||"").trim(),l:iL>=0?String(r[iL]||"").trim():""});}
+  return out;
+}
+function urlGviz(fmt){
+  const id=idSpreadsheet(PENGATURAN.idStok);
+  return "https://docs.google.com/spreadsheets/d/"+id+"/gviz/tq?tqx=out:"+fmt+
+    (fmt==="json"?";responseHandler:__stok":"")+"&sheet="+encodeURIComponent(PENGATURAN.sheetStok);
+}
+async function muatStok(diam){
+  statusStok("Sedang memuat…");
+  try{
+    const r=await fetch(urlGviz("csv"),{cache:"no-store"});
+    if(!r.ok)throw new Error(r.status);
+    const baris=petakanStok(parseCSV(await r.text()));
+    if(!baris.length)throw new Error("kolom tidak dikenali");
+    simpanStok(baris,""); if(!diam)toast("Stok dimuat: "+baris.length+" unit"); return;
+  }catch(e){}
+  try{ const baris=await muatStokJSONP(); if(baris.length){simpanStok(baris,"");if(!diam)toast("Stok dimuat: "+baris.length+" unit");return;} }catch(e){}
+  statusStok("Gagal memuat online — pakai data tersimpan atau muat berkas CSV di tab Pengaturan.");
+  if(!diam)toast("Stok tidak bisa dimuat online",1);
+}
+function muatStokJSONP(){
+  return new Promise((ok,gagal)=>{
+    const s=document.createElement("script");
+    const bersih=()=>{delete window.__stok;s.remove();};
+    const jam=setTimeout(()=>{bersih();gagal(new Error("timeout"));},15000);
+    window.__stok=j=>{clearTimeout(jam);bersih();
+      try{const kolom=j.table.cols.map(c=>c.label||c.id);
+        const baris=[kolom].concat(j.table.rows.map(r=>r.c.map(c=>c?(c.f!=null?c.f:c.v):"")));
+        ok(petakanStok(baris));}catch(e){gagal(e);}};
+    s.onerror=()=>{clearTimeout(jam);bersih();gagal(new Error("jsonp"));};
+    s.src=urlGviz("json");document.head.appendChild(s);
+  });
+}
+function stokTerpakai(){
+  if(!el("stokSulut").checked)return STOK;
+  return STOK.filter(x=>PLANT_SULUT.includes((x.p||"").toUpperCase())||PLANT_SULUT.includes((x.l||"").toUpperCase()));
+}
+function isiType(){
+  const pilihan=el("type"), lama=pilihan.value;
+  const set=[...new Set(stokTerpakai().map(x=>x.d))].sort();
+  pilihan.innerHTML='<option value=""></option>'+set.map(t=>`<option>${esc(t)}</option>`).join("");
+  if(lama){if(!set.includes(lama))pilihan.insertAdjacentHTML("beforeend",`<option>${esc(lama)}</option>`);pilihan.value=lama;}
+  isiWarna();
+}
+function isiWarna(){
+  const t=el("type").value, pilihan=el("warna"), lama=pilihan.value;
+  const set=[...new Set(stokTerpakai().filter(x=>x.d===t).map(x=>x.w))].filter(Boolean).sort();
+  pilihan.innerHTML='<option value=""></option>'+set.map(w=>`<option>${esc(w)}</option>`).join("");
+  if(lama){if(!set.includes(lama))pilihan.insertAdjacentHTML("beforeend",`<option>${esc(lama)}</option>`);pilihan.value=lama;}
+  isiRangka();
+}
+function isiRangka(){
+  const t=el("type").value,w=el("warna").value,pilihan=el("rangka"),lama=pilihan.value;
+  const list=stokTerpakai().filter(x=>x.d===t&&(!w||x.w===w));
+  pilihan.innerHTML='<option value=""></option>'+list.map(x=>`<option value="${esc(x.r)}">${esc(x.r)}${x.p?" — "+esc(x.p):""}</option>`).join("");
+  if(lama){if(!list.some(x=>x.r===lama))pilihan.insertAdjacentHTML("beforeend",`<option>${esc(lama)}</option>`);pilihan.value=lama;}
+}
+function dariRangka(){
+  const r=el("rangka").value; if(!r)return;
+  const u=STOK.find(x=>x.r===r); if(!u)return;
+  el("mesin").value=u.m||"";
+  if(u.t)el("thn").value=String(u.t).replace(/\D/g,"").slice(0,4);
+  if(!el("warna").value&&u.w)el("warna").value=u.w;
+  el("silinder").value=silinderDari(u.d);
+  el("jenis").value=jenisDari(u.d);
+}
+function silinderDari(desc){
+  const m=String(desc||"").match(/(\d)\.(\d)/);
+  if(m)return String(m[1])+String(m[2])+"00";
+  return "";
+}
+function jenisDari(desc){
+  const d=String(desc||"").toUpperCase();
+  if(/\bPU\b|PICK ?UP|\bBV\b|BOX/.test(d))return "MOBIL BARANG";
+  return "MOBIL PENUMPANG";
+}
+function ubahManual(aktif){
+  manualUnit=aktif;
+  ["type","warna","rangka"].forEach(id=>{
+    const lama=el(id).value, n=el(id);
+    if(aktif){ if(n.tagName==="SELECT"){const inp=document.createElement("input");inp.id=id;inp.value=lama;inp.style.textTransform=(id==="rangka"?"uppercase":"none");n.replaceWith(inp);} }
+    else { if(n.tagName==="INPUT"){const sel=document.createElement("select");sel.id=id;n.replaceWith(sel);} }
+  });
+  if(!aktif){isiType();pasangEventUnit();}
+  el("bManual").textContent=aktif?"Kembali pilih dari stok":"Isi unit manual";
+}
+function pasangEventUnit(){
+  if(manualUnit)return;
+  el("type").onchange=()=>{isiWarna();el("jenis").value=jenisDari(el("type").value);el("silinder").value=silinderDari(el("type").value);};
+  el("warna").onchange=isiRangka;
+  el("rangka").onchange=dariRangka;
+}
+
+/* ================= isian ================= */
+function isiPilihan(){
+  el("sales").innerHTML='<option value=""></option>'+pecah(DAFTAR_SALES).map(x=>`<option>${esc(x.nama)}</option>`).join("");
+  const ss=pecah(DAFTAR_SS);
+  el("ss").innerHTML='<option value=""></option>'+ss.map(x=>`<option>${esc(x.nama)}</option>`).join("");
+  if(ss.length&&!el("ss").value){el("ss").value=ss[0].nama;el("npkSS").value=ss[0].npk;}
+  el("kota").innerHTML='<option value=""></option>'+KOTA.map(k=>`<option>${k}</option>`).join("");
+  el("posisi").innerHTML='<option value=""></option>'+POSISI.map(k=>`<option>${k}</option>`).join("");
+  el("leasing").innerHTML='<option value=""></option>'+DAFTAR_LEASING.split("\n").map(x=>x.trim()).filter(Boolean).map(l=>`<option>${esc(l)}</option>`).join("");
+  let h="";for(let i=1;i<=6;i++)h+=`<tr><td>Bayar ${i}</td><td><input id="bayar${i}" class="rp" inputmode="numeric" placeholder="Rp"></td><td style="width:42%"><input id="tglBayar${i}" type="date"></td></tr>`;
+  el("tbBayar").innerHTML=h;
+  h="";for(let i=1;i<=3;i++)h+=`<tr><td>Alih ${i}</td><td><input id="jml${i}" class="rp alih" inputmode="numeric" placeholder="Rp"></td><td style="width:42%"><input id="tglP${i}" type="date" class="alih"></td></tr>`;
+  el("tbAlih").innerHTML=h;
+  el("setSales").value=DAFTAR_SALES; el("setSSList").value=DAFTAR_SS; el("setLeasing").value=DAFTAR_LEASING;
+  el("setKacab").value=PENGATURAN.kacab; el("setADH").value=PENGATURAN.adh; el("setKawil").value=PENGATURAN.kawil;
+  el("setWilayah").value=PENGATURAN.wilayah; el("setCabang").value=PENGATURAN.cabang;
+  el("setKodeCabang").value=PENGATURAN.kodeCabang||"";
+  el("setAlamatCabang").value=PENGATURAN.alamatCabang; el("setKota").value=PENGATURAN.kota;
+  el("urlStok").value=PENGATURAN.idStok; el("namaSheetStok").value=PENGATURAN.sheetStok;
+  el("pilihDok").innerHTML=DOK.map(d=>`<label class="chip on"><input type="checkbox" value="${d[0]}" checked> ${d[1]}</label>`).join("");
+}
+const SEMUA_ID=()=>$$("#p-form input,#p-form select,#p-form textarea").map(x=>x.id).filter(Boolean);
+function ambilData(){
+  const d={};SEMUA_ID().forEach(id=>{const n=el(id);d[id]=n.type==="checkbox"?n.checked:n.value;});
+  const h=hitungDP(); d.dp=h.dp; d.dpNex=h.nex; d.totalBayar=totalBayar(); d.lanjutData="";
+  return d;
+}
+function pasangData(d){
+  SEMUA_ID().forEach(id=>{const n=el(id);if(!(id in d))return;if(n.type==="checkbox")n.checked=!!d[id];else n.value=d[id]==null?"":d[id];});
+  hitung(); kunciAlih();
+}
+function hitungDP(){
+  const otr=angka(el("otr").value),um=angka(el("um").value),dis=angka(el("diskon").value);
+  if((el("cashKredit").value||"").toUpperCase()==="CASH")return{dp:"CASH",nex:"CASH"};
+  if(!otr||!um)return{dp:"",nex:""};
+  const p=v=>(v/otr*100).toFixed(2)+"%";
+  return{dp:p(um),nex:p(Math.max(um-dis,0))};
+}
+function totalBayar(){let t=0;for(let i=1;i<=6;i++){const n=el("bayar"+i);if(n)t+=angka(n.value);}return t;}
+function hitung(){
+  const h=hitungDP();
+  el("dpInfo").value=h.dp?h.dp+"  /  "+h.nex:"";
+  el("totalBayar").value=rp(totalBayar());
+  el("program").value=el("kodePaket").value||"";
+  el("progTambah").value=rp(el("diskon").value);
+}
+function kunciAlih(){
+  const ada=(el("pengalihan").value||"").toUpperCase()==="YA";
+  ["hubungan","namaKirim","alamatKirim","ktpKirim","telpKirim","spkLama","viaBayar"].forEach(id=>{el(id).disabled=!ada;if(!ada)el(id).value="";});
+  $$(".alih").forEach(n=>{n.disabled=!ada;if(!ada)n.value="";});
+  el("cardAlih").classList.toggle("mati",!ada);
+}
+
+/* ================= lembar cetak ================= */
+function lembar(kelas,isi,gaya){return `<div class="sheet ${kelas}"><div class="isi" style="${gaya||""}">${isi}</div></div>`;}
+function isiAtau(v,l){const s=esc(v);return s?`<span class="b">${s}</span>`:"&nbsp;";}
+
+/* ---------- 1. CHECKLIST ---------- */
+function dokChecklist(d){
+  const kot=(v,w)=>`<td style="width:${w};padding:.5mm .8mm .5mm 0"><div class="kotak2">${isiAtau(v)}</div></td>`;
+  const lb=(t,w)=>`<td style="width:${w};padding-right:1mm">${t}</td>`;
+  const tipe=(d.tipeCust||"PERORANGAN").toUpperCase(), per=tipe==="PERORANGAN";
+  const tc=n=>`<span style="display:inline-block;border:.6pt solid #000;width:5.4mm;text-align:center;${(n===1&&per)||(n===2&&tipe==="PERUSAHAAN")||(n===3&&tipe==="PEMERINTAHAN")?"font-weight:bold;background:#dce6f1":""}">${n}</span>`;
+  const dokA=[["SPK Valid (Telah terisi data : Customer / STNK / Type / Price / Warna / No. Rangka / Engine / TTD Customer, Sales, SS &amp; Kacab)","SS",0],
+    ["KTP Valid &amp; Jelas (Tanggal masa berlaku serta Copy dan Foto hurufnya jelas)","ADM",0],
+    ["Copy NPWP (Copy dan Foto hurufnya jelas)","ADM",per?3:0],
+    ["PO Valid (Asli, Tidak Bersyarat, di TDD Pejabat, ada data Kendaraan &amp; Harga, masa berlaku &amp; TOP)","ADM",0],
+    ["Bukti Pembayaran / Rekening Koran","ADM",0]];
+  const dokB=[["Check data CRM pada system sesuaikan dengan data KTP / NPWP Customer &amp; data Kendaraannya","SS",0],
+    ["PPH / Persetujuan Discount (Bila ada discount)","SS",0],
+    ["BPH dan LAMPIRAN (Bila ada discount / cash back / subsidi in-out DP)","ADM",0],
+    ["SPB / Surat Pernyataan Bersama (Bila Nama STNK berbeda dengan nama pemesan)","ADM",0],
+    ["Surat Pengalihan Pembayaran (Bila nama pemesan berbeda dengan nama pada Rekening Koran)","SS",0]];
+  const dokC=[["Gesekan Nomor Rangka",0],["Copy KTP Valid dan Jelas",0],["Copy NPWP Valid dan Jelas",0],
+    ["Domisili Valid (Masa berlaku tidak expired)",per?1:0],["SIUP &amp; SITU (Surat Ijin Tempat Usaha) Valid",per?1:0],
+    ["Form Permohonan Faktur (di TTD dan ada stempel perusahaan)",0],["Form Permohonan BPKB (di TTD dan ada stempel perusahaan)",0],
+    ["Surat Kuasa (Perusahaan dengan KOP Surat beralamat dan nomor telepon)",0],
+    ["Surat Pernyataan (bila alamat KOP Surat tidak sama dengan Surat Domisili)",per?1:0],
+    ["Form Pilih Nomor Khusus",0],["Surat Pelanggaran Wilayah (Bila pengurusan luar daerah)",0]];
+  const kepala=t=>`<tr><td class="judulblok" colspan="2">${t}</td><td></td>
+    <td class="kc" colspan="3" style="width:21mm">Kolom Check</td><td class="kc" style="width:15mm">PIC</td><td class="kc" style="width:15mm">BILL</td></tr>`;
+  const brs=(no,teks,pic,hitam)=>`<tr><td class="rt" style="width:8mm;padding-right:1.4mm">${no}.</td><td style="width:110mm">${teks}</td><td style="width:20mm"></td>
+    <td class="ck${hitam?" hitam":""}" style="width:7mm">&nbsp;</td><td class="ck${hitam===3?" hitam":""}" style="width:7mm">&nbsp;</td><td class="ck${hitam===3?" hitam":""}" style="width:7mm">&nbsp;</td>
+    <td class="ck ct" style="width:15mm">${pic}</td><td class="ck" style="width:15mm">&nbsp;</td></tr>`;
+  const kosong=`<tr><td colspan="8" style="height:1.6mm"></td></tr>`;
+  let bayar="";const rom=["I","II","III","IV","V","VI"];
+  for(let i=1;i<=6;i++)bayar+=`<tr><td style="width:26mm">Pembayaran - ${rom[i-1]}</td><td style="width:8mm">Rp.</td>
+    <td class="rt gb" style="width:50mm">${isiAtau(rp(d["bayar"+i]))}</td>
+    <td style="width:14mm;padding-left:2.5mm">No Doc.</td><td class="gb" style="width:44mm">&nbsp;</td>
+    <td style="width:16mm;padding-left:2.5mm">Tanggal :</td><td class="gb ct">${isiAtau(tglID(d["tglBayar"+i],"singkat"))}</td></tr>`;
+  return lembar("cl mini",`
+  <style>
+    .cl2 table{width:100%;border-collapse:collapse}
+    .cl2 td{border:0;padding:.3mm 0;vertical-align:middle;line-height:1.15}
+    .cl2 .kotak2{border:.6pt solid #000;padding:.35mm 1.2mm;min-height:4mm;white-space:nowrap;overflow:hidden}
+    .cl2 .bar1{background:#dce6f1;font-weight:bold;text-align:center;border:.6pt solid #000;padding:.6mm}
+    .cl2 .judulblok{background:#dce6f1;font-weight:bold;padding:.6mm 1.2mm}
+    .cl2 .kc{background:#dce6f1;font-weight:bold;text-align:center;border:.6pt solid #000;width:7mm}
+    .cl2 .ck{border:.6pt solid #000;height:4mm}
+    .cl2 .hitam{background:#000}
+    .cl2 .gb{border-bottom:.6pt solid #000}
+    .cl2 .blok{border:.7pt solid #000;padding:1.1mm;margin-top:1.1mm}
+  </style>
+  <div class="cl2" style="border:.8pt solid #000;padding:1.3mm;height:283mm">
+    <table><tr><td class="bar1" colspan="10">DATA CUSTOMER (PIC SS)</td></tr></table>
+    <table style="margin-top:1mm">
+      <tr>${lb("No SPK / Cabang","23mm")}${kot(d.noSPK,"26mm")}${kot(PENGATURAN.kodeCabang||(PENGATURAN.cabang||"").split(" ")[0],"13mm")}
+        ${lb("NPK/ Sales","15mm")}${kot(d.npk,"14mm")}<td class="ct" style="width:4mm">/</td>${kot(d.sales,"44mm")}
+        ${lb("No. Opportunity","21mm")}${kot(d.noOpp,"28mm")}</tr>
+      <tr>${lb("No. Customer","23mm")}<td colspan="2" style="padding:.5mm .8mm .5mm 0"><div class="kotak2">${isiAtau(d.noCust)}</div></td>
+        ${lb("NPK/ SS","15mm")}${kot(d.npkSS,"14mm")}<td class="ct">/</td>${kot(d.ss,"44mm")}
+        ${lb("No. Quotation","21mm")}${kot(d.noQuot,"28mm")}</tr>
+      <tr>${lb("Nama Customer","23mm")}<td colspan="6" style="padding:.5mm .8mm .5mm 0"><div class="kotak2">${isiAtau(d.namaSPK)}</div></td>
+        ${lb("No. Sales Order","21mm")}${kot("","28mm")}</tr>
+    </table>
+
+    <div class="blok">
+      <table><tr><td class="bar1">DATA KENDARAAN / HARGA / CARA PEMBAYARAN (PIC SS)</td></tr></table>
+      <table style="margin-top:1.2mm"><tr>
+        <td style="width:80mm;vertical-align:top;padding:0">
+          <table>
+            <tr>${lb("Type Kendaraan","26mm")}${kot(d.type,"54mm")}</tr>
+            <tr>${lb("No. Rangka","26mm")}${kot(d.rangka,"54mm")}</tr>
+            <tr>${lb("No. Mesin","26mm")}${kot(d.mesin,"54mm")}</tr>
+          </table>
+        </td>
+        <td style="width:52mm;vertical-align:top;padding:0 0 0 3mm">
+          <table>
+            <tr>${lb("Price / Harga","19mm")}${kot(rp(d.otr),"33mm")}</tr>
+            <tr>${lb("Warna","19mm")}${kot(d.warna,"33mm")}</tr>
+            <tr>${lb("Tahun","19mm")}${kot(d.thn,"33mm")}</tr>
+          </table>
+        </td>
+        <td style="vertical-align:top;padding:0 0 0 4mm">
+          <div style="white-space:nowrap;padding:.9mm 0"><b>On The Road</b> / <s>Off The Road</s>*</div>
+          <div style="white-space:nowrap;padding:1.4mm 0"><i>*Bila Off The Road, Harap diberi Alasannya</i></div>
+        </td></tr>
+      </table>
+      <table style="margin-top:.8mm"><tr>
+        <td style="white-space:nowrap">Cara Pembayaran :&nbsp;&nbsp; 1. Cash / Tunai&nbsp;&nbsp;&nbsp; 2. PO Full (TOP)&nbsp;&nbsp;&nbsp; 3. COP&nbsp;&nbsp;&nbsp; 4. Leasing</td>
+        ${lb("Leasing","20mm")}${kot(d.leasing,"40mm")}</tr>
+      </table>
+    </div>
+
+    <div class="blok">
+      <table><tr><td class="bar1">Document Kelengkapan SPK / Proses DO / STNK</td></tr></table>
+      <table style="margin-top:1.2mm">
+        <tr><td colspan="3">Type Customer : 1. Perorangan &nbsp; 2. Perusahaan &nbsp; 3. Pemerintahan</td>
+            <td class="ct" colspan="3">${tc(1)} ${tc(2)} ${tc(3)}</td><td></td><td></td></tr>
+        ${kosong}${kepala("DOKUMEN KELENGKAPAN SPK")}
+        ${dokA.map((x,i)=>brs(i+1,x[0],x[1],x[2])).join("")}
+        ${kosong}${kepala("DOKUMEN TAMBAHAN KELENGKAPAN PROSES PEMBUKAAN DO")}
+        ${dokB.map((x,i)=>brs(i+6,x[0],x[1],x[2])).join("")}
+        ${kosong}${kepala("DOKUMEN KELENGKAPAN PENGAJUAN STNK")}
+        ${dokC.map((x,i)=>brs(i+1,x[0],"ADM",x[1])).join("")}
+        <tr><td></td><td colspan="7"><i>*Pengurusan di luar daerah akan disesuaikan dengan ketentuan daerah pengurusan.</i></td></tr>
+      </table>
+      <table style="margin-top:2mm"><tr><td style="width:56mm"></td><td>Paraf Checker :</td></tr></table>
+      <table style="margin-top:5mm"><tr>
+        <td style="width:138mm"></td>
+        <td style="border-top:.6pt solid #000;padding:0;width:51mm">
+          <table><tr><td class="ct" style="width:17mm">Adm.</td><td class="ct" style="width:17mm">SS</td><td class="ct" style="width:17mm">Sentra</td></tr></table>
+        </td></tr></table>
+    </div>
+
+    <div class="blok">
+      <table><tr>
+        <td style="width:76mm;vertical-align:top">Note (Alasan) :<div class="ct b" style="margin-top:3mm">${esc(d.program||d.kodePaket)}</div></td>
+        <td style="width:22mm;vertical-align:top">Program &nbsp;:</td><td class="gb" style="width:34mm;vertical-align:top">&nbsp;</td>
+        <td style="width:26mm;padding-left:3mm;vertical-align:top">Subsidi Leasing</td><td style="width:4mm;vertical-align:top">:</td>
+        <td class="gb" style="vertical-align:top">Rp.&nbsp;</td></tr>
+      <tr><td></td><td style="padding-top:2.4mm">Cashback :</td><td class="gb" style="padding-top:2.4mm">&nbsp;</td>
+        <td style="padding-left:3mm;padding-top:2.4mm">Prog. Tambahan</td><td style="padding-top:2.4mm">:</td>
+        <td class="gb rt" style="padding-top:2.4mm">Rp.&nbsp;${isiAtau(rp(d.diskon))}</td></tr></table>
+    </div>
+
+    <div class="blok">
+      <table><tr><td class="bar1">PEMBAYARAN UANG MUKA / DOWN PAYMENT (DP)</td></tr></table>
+      <table style="margin-top:1.4mm">
+        <tr><td style="width:34mm">Total Uang Muka / DP</td><td style="width:8mm">Rp.</td>
+          <td class="rt gb" style="width:50mm">${isiAtau(rp(d.um))}</td><td></td></tr>
+      </table>
+      <table style="margin-top:1.8mm">${bayar}
+        <tr><td>TOTAL BAYAR</td><td>Rp.</td><td class="rt">${isiAtau(rp(d.totalBayar))}</td>
+          <td></td><td></td><td></td><td></td></tr>
+      </table>
+    </div>
+
+    <div class="blok">
+      <table><tr><td class="bar1">DOKUMEN PENAGIHAN NON MoU / PERUSHAAAN (FLEET / PEMERINTAH)</td></tr></table>
+      <table style="margin-top:1.4mm">
+        ${["I","II","III"].map(x=>`<tr><td style="width:26mm">Kwitansi - ${x}</td><td style="width:8mm">Rp.</td>
+          <td class="gb" style="width:50mm">&nbsp;</td>
+          <td style="width:14mm;padding-left:2.5mm">No Kwt.</td><td class="gb" style="width:44mm">&nbsp;</td><td></td></tr>`).join("")}
+        <tr><td>Leasing</td><td>:</td><td class="gb">&nbsp;</td><td></td><td></td><td></td></tr>
+        <tr><td>PIC Pembayaran</td><td>:</td><td class="gb">&nbsp;</td>
+          <td style="padding-left:2.5mm">No Kwt.</td><td class="gb">&nbsp;</td><td></td></tr>
+      </table>
+    </div>
+
+    <table style="margin-top:1.6mm"><tr><td></td><td class="rt b u" style="width:36mm">Validasi Sentra</td></tr></table>
+    <div style="border:.7pt solid #000;padding:1.1mm;margin-top:.8mm">
+      <div><span class="b u">PERHATIAN !</span></div>
+      <div class="b">Dokumen ini hanya untuk PENGGUNAAN INTERNAL dan TIDAK dapat dipergunakan untuk TRANSAKSI JUAL BELI maupun<br>PENERIMAAN PEMBAYARAN.</div>
+      <table style="margin-top:4mm"><tr><td></td><td class="rt b" style="width:36mm">Checker Sentra</td></tr></table>
+    </div>
+  </div>`);
+}
+
+/* ---------- 2. CHECK SHEET PDI ---------- */
+const PDI_KIRI=[["BAGIAN LUAR KENDARAAN"],
+ [1,"Bagian Luar","Periksa dengan teliti seluruh bodi :|- Depan|- Samping Kanan|- Belakang|- Samping Kiri"],
+ [2,"Fungsi dari masing-masing bagian : pintu-pintu, tutup ruang mesin, tutup bagasi, dll","Periksa bekerjanya :|- pegangan pintu|- kunci|- kap mesin|- pintu belakang dll."],
+ [3,"Fungsi bagian kelistrikan dan semua lampu","Periksa bekerjanya :|- Lampu besar|- Lampu parkir|- Lampu belakang|- Lampu rem|- Lampu belok|- Lampu mundur|- Lampu plat nomor|- Hazard|- Power window|- Central lock"],
+ ["RUANG MESIN"],
+ [4,"Air pendingin dan air pembasuh kaca","Periksa melalui tangki cadangan :|- air pendingin mesin|- air pembasuh kaca"],
+ [5,"Oli Mesin","Periksa pada tongkat pengukur oli"],
+ [6,"Oli Power Steering","Periksa permukaan oli melalui pengukur pada tutupnya"],
+ [7,"ACCU","- periksa ketinggian air accu|- terminal"],
+ [8,"Periksa kebocoran bahan bakar, oli, air pendingin, atau fluida lain","perhatikan kebocoran bahan bakar, air pendingin, oli atau fluida lain"]];
+const PDI_KANAN=[["BAGIAN DALAM KENDARAAN"],
+ [9,"Tempat duduk dan sabuk pengaman","Periksa bekerjanya mekanisme tempat duduk :|- depan kiri|- depan kanan|- tengah kiri|- tengah kanan|- belakang|periksa bekerjanya mekanisme sabuk pengaman :|- depan kiri|- depan kanan|- tengah kiri|- tengah kanan"],
+ [10,"Interior","Periksa dengan Teliti penampilan dari :|- panel intrumen|- gantungan pakaian|- door trim|- cover tempat duduk|- head lining|- quarter trim|- kaca spion dalam|- sun visor|- laci"],
+ [11,"Sistim kelistrikan interior","periksa bekerjanya panel instrumen :|- pengukur BBM|- pengukur suhu mesin|- lampu pengisian|- lampu peringatan|- rem tangan|- lampu tekanan oli|- speedometer|- tachometer|- head unit|- AC|- electric mirror|- jam|- wiper"],
+ ["LAIN-LAIN"],
+ [12,"Ban - Ban","Periksa dengan teliti ban dari kemungkinan rusak, cacat, serta tekanan angin ban"]];
+function pdiKolom(daftar){
+  let h="";
+  for(const b of daftar){
+    if(b.length===1){h+=`<tr><td class="sec" colspan="5">${b[0]}</td></tr>`;continue;}
+    const pros=String(b[2]).split("|");
+    h+=`<tr><td class="ct" rowspan="${pros.length}" style="width:6mm">${b[0]}</td>
+      <td rowspan="${pros.length}" style="width:26mm">${b[1]}</td><td style="width:32mm">${pros[0]}</td>
+      <td rowspan="${pros.length}" style="width:9mm"></td><td rowspan="${pros.length}"></td></tr>`;
+    for(let i=1;i<pros.length;i++)h+=`<tr><td>${pros[i]}</td></tr>`;
+  }
+  return h;
+}
+function dokPdi(d){
+  const tam=[["- SEGITIGA PENGAMAN","- KOTAK P3K","- DONGKRAK"],["- BUKU SERVICE","- MANUAL BOOK","- BAN SLEEP"],["- TOOLS KIT","- KARPET","- WHEEL DOP"]];
+  return lembar("cl mini",`
+  <style>
+    .pdi td{border:.5pt solid #000;padding:.4mm 1mm;vertical-align:top;line-height:1.12}
+    .pdi .sec{background:#7f7f7f;color:#fff;font-weight:bold}
+    .pdi .hdr{background:#d9d9d9;font-weight:bold;text-align:center}
+    .pdi table{width:100%;border-collapse:collapse}
+  </style>
+  <div class="pdi">
+    <table>
+      <tr>
+        <td style="width:62mm;padding:1mm 2mm">
+          <div class="b" style="font-size:1.35em">Innovation for Tomorrow</div>
+          <div style="color:#E60012;font-weight:800;font-size:1.9em;letter-spacing:-.3px">◆ DAIHATSU</div>
+          <div style="margin-top:2mm">NO BSTKB</div>
+        </td>
+        <td style="padding:1mm">
+          <div class="ct">CHECK SHEET<br><span class="b">VEHICLE DELIVERY QUALITY STANDARD</span><br><span class="b">PDI BY SALESMAN</span><br>
+          <span style="font-size:.9em">CABANG/DEALER : ${esc(PENGATURAN.cabang)}</span></div>
+          <table style="margin-top:1mm"><tr><td style="width:24mm">SIMBOL (SBL)</td><td class="ct" style="width:8mm">V</td><td style="width:8mm">= OK</td><td></td></tr>
+          <tr><td></td><td class="ct">X</td><td>= NOT OK</td><td></td></tr></table>
+        </td>
+        <td style="width:64mm;padding:0">
+          <table><tr><td class="hdr" colspan="3">DATA UNIT</td></tr>
+          <tr><td style="width:16mm">Tipe</td><td style="width:3mm">:</td><td class="b">${esc(d.type)}</td></tr>
+          <tr><td>No Rangka</td><td>:</td><td class="b">${esc(d.rangka)}</td></tr>
+          <tr><td>No Mesin</td><td>:</td><td class="b">${esc(d.mesin)}</td></tr>
+          <tr><td>Warna</td><td>:</td><td class="b">${esc(d.warna)}</td></tr></table>
+        </td>
+      </tr>
+    </table>
+    <table style="margin-top:1mm">
+      <tr>
+        <td style="width:50%;padding:0;border:0">
+          <table><tr><td class="hdr" style="width:6mm">NO</td><td class="hdr" style="width:26mm">HAL YANG DIPERIKSA</td>
+            <td class="hdr" style="width:32mm">PROSEDUR PEMERIKSAAN</td><td class="hdr" style="width:9mm">SBL</td><td class="hdr">Catatan</td></tr>
+            ${pdiKolom(PDI_KIRI)}</table>
+        </td>
+        <td style="width:50%;padding:0;border:0">
+          <table><tr><td class="hdr" style="width:6mm">NO</td><td class="hdr" style="width:26mm">HAL YANG DIPERIKSA</td>
+            <td class="hdr" style="width:32mm">PROSEDUR PEMERIKSAAN</td><td class="hdr" style="width:9mm">SBL</td><td class="hdr">Catatan</td></tr>
+            ${pdiKolom(PDI_KANAN)}</table>
+        </td>
+      </tr>
+    </table>
+    <table style="margin-top:1.5mm">
+      <tr><td class="hdr" style="width:25%">Tanggal pemeriksaan :</td><td class="hdr" style="width:25%">kesimpulan :</td>
+          <td class="hdr" style="width:20%">Posisi BBM</td><td class="hdr">Catatan Item repair</td></tr>
+      <tr><td style="height:22mm">Pemeriksa<br>SALES FORCE<div class="b" style="margin-top:16mm">${esc(d.sales)}</div></td>
+          <td>Mengetahui :<br>KEPALA CABANG<div class="b" style="margin-top:16mm">${esc(PENGATURAN.kacab)}</div></td>
+          <td></td><td style="padding:0"><table><tr><td style="height:17mm;border:0"></td></tr><tr><td style="border:0;border-top:.5pt solid #000">Tanggal :</td></tr></table></td></tr>
+    </table>
+    <div class="b" style="margin-top:2mm">PERLENGKAPAN TAMBAHAN</div>
+    <table style="border:0;margin-top:1mm">${tam.map(r=>`<tr>${r.map(c=>
+      `<td style="border:0;width:18%">${c}</td><td style="border:.5pt solid #000;width:12mm">&nbsp;</td><td style="border:0;width:6mm"></td>`).join("")}</tr>`).join("")}
+    </table>
+  </div>`);
+}
+
+/* ---------- pembantu surat ---------- */
+function brs(l,v,wl,dot){return `<tr><td style="width:${wl||34}mm">${l}</td><td style="width:4mm">:</td>
+  <td>${dot?`<span class="dot">${v?`<span class="b">${esc(v)}</span>`:"&nbsp;"}</span>`:(v?`<span class="b">${esc(v)}</span>`:"&nbsp;")}</td></tr>`;}
+function tglSurat(d){return tglID(d.tglSPK,"panjang")||hariIni("panjang");}
+
+/* ---------- 3. SURAT KUASA ---------- */
+function dokKuasa(d){
+  const perus=(d.tipeCust||"").toUpperCase()!=="PERORANGAN";
+  return lembar("serif",`
+  <div class="jd" style="font-size:1.25em;margin-bottom:6mm">SURAT KUASA</div>
+  <div>Yang bertanda tangan di bawah ini</div>
+  <table class="iso" style="margin:2mm 0 0 10mm">
+    ${brs("Nama",d.namaSPK,26)}${brs("No Telp.",d.wa,26)}${brs("Alamat",d.alamatPemohon,26)}
+    ${brs("Pekerjaan",d.kerjaPemohon,26)}${brs("Email",d.email,26)}
+  </table>
+  <div style="margin-top:3mm">Dengan ini memberikan kuasa penuh kepada :</div>
+  <table class="iso" style="margin:2mm 0 0 10mm">${brs("Nama","",26)}${brs("Alamat","",26)}</table>
+  <div style="margin-top:3mm">Untuk mengurus STNK dan BPKB atas penjualan Daihatsu Cabang ${esc(PENGATURAN.kota)} dengan data-data<br>sebagai berikut:</div>
+  <table class="iso" style="margin:2mm 0 0 10mm">
+    ${brs("Merk","DAIHATSU",26)}${brs("Type",d.type,26)}${brs("Jenis",d.jenis,26)}${brs("Tahun",d.thn,26)}
+    ${brs("Warna",d.warna,26)}${brs("No. NIK",d.rangka,26)}${brs("No. Mesin",d.mesin,26)}
+  </table>
+  <div style="margin-top:4mm">Demikian surat kuasa ini kami buat dengan benar, agar dapat dipergunakan sebagai mestinya :</div>
+  <div style="margin:5mm 0 0 0">${esc(PENGATURAN.kota)} , ${tglSurat(d)}</div>
+  <table style="width:100%;margin-top:4mm"><tr>
+    <td style="width:50%">Yang Memberi Kuasa</td><td>Yang Menerima Kuasa</td></tr>
+    <tr><td style="height:22mm"></td><td></td></tr>
+    <tr><td class="b">${esc(d.namaSPK)}<div style="font-weight:normal">Customer</div></td><td></td></tr>
+  </table>`, perus?"padding-top:38mm":"padding-top:12mm");
+}
+
+/* ---------- 4. PENGALIHAN DANA ---------- */
+function dokAlih(d){
+  let tot=0;let baris="";
+  for(let i=1;i<=4;i++){const n=angka(d["jml"+i]||0);tot+=n;
+    baris+=`<tr><td style="width:44mm">Tgl/Jmlah Pembayaran ke-${i}</td><td style="width:4mm">:</td>
+      <td style="width:8mm">Tgl.</td><td style="width:38mm"><span class="dot">${d["tglP"+i]?`<span class="b">${tglID(d["tglP"+i],"pendek")}</span>`:"&nbsp;"}</span></td>
+      <td style="width:8mm;padding-left:4mm">Rp</td><td style="padding-left:1.5mm"><span class="dot">${n?`<span class="b">${rp(n)}</span>`:"&nbsp;"}</span></td></tr>`;}
+  return lembar("serif",`
+  <div class="jd" style="font-size:1.2em;margin-bottom:5mm">SURAT PERNYATAAN PENGALIHAN DANA</div>
+  <div>Saya yang bertanda tangan di bawah ini :</div>
+  <table class="iso" style="margin:3mm 0 0 10mm;width:170mm">
+    ${brs("NAMA",d.namaKirim,40,1)}${brs("ALAMAT",d.alamatKirim,40,1)}${brs("NO.KTP",d.ktpKirim,40,1)}
+    ${brs("NO.TELP &amp; HP",d.telpKirim,40,1)}${brs("NO SPK",d.noSPK,40,1)}${brs("HUBUNGAN",d.hubungan,40,1)}
+  </table>
+  <div style="margin-top:1mm">Dengan ini menyatakan bahwa pembayaran sebagai berikut :</div>
+  <table class="iso" style="margin:3mm 0 0 10mm;width:170mm">
+    <tr><td style="width:44mm">Bank/Cash</td><td style="width:4mm">:</td><td colspan="4"><span class="dot" style="width:46mm">${d.viaBayar?`<span class="b">${esc(d.viaBayar)}</span>`:"&nbsp;"}</span></td></tr>
+    ${baris}
+    <tr><td>Terbilang</td><td>:</td><td colspan="4">${tot?`<span class="b">${esc(terbilang(tot))}</span>`:"&nbsp;"}</td></tr>
+    <tr><td colspan="6" style="padding-top:1mm"><div style="border-bottom:1.2pt solid #000;width:96mm;margin-left:38mm"></div></td></tr>
+  </table>
+  <div style="margin-top:4mm;margin-left:10mm">Digunakan untuk pembayaran:</div>
+  <table class="iso" style="margin:3mm 0 0 10mm;width:170mm">
+    ${brs("NAMA",d.namaSPK,40,1)}${brs("ALAMAT",d.alamatPemohon,40,1)}
+    <tr><td style="height:2mm"></td></tr>
+    <tr><td style="white-space:nowrap">SURAT PESANAN KEND.</td><td>:</td><td><span class="dot">No. <span class="b">${esc(d.noSPK)}</span> &nbsp; Tgl. &nbsp;<span class="b">${tglID(d.tglSPK,"singkat")}</span></span></td></tr>
+    ${brs("NO CUSTOMER",d.noCust,40,1)}<tr><td style="white-space:nowrap">NO SALES ORDER</td><td style="width:4mm">:</td><td><span class="dot">&nbsp;</span></td></tr>
+  </table>
+  <div style="margin-top:4mm">Demikian Surat Pernyataan ini saya buat dalam keadaan sadar dan sebenarnya tanpa ada paksaan maupun
+  tekanan dari pihak manapun untuk dipergunakan sebagaimana mestinya</div>
+  <table style="width:100%;margin-top:5mm"><tr>
+    <td style="width:52%">${esc(PENGATURAN.kota)}, ${hariIni("panjang")}</td><td class="ct">Menyetujui</td></tr>
+    <tr><td style="padding:6mm 0 0 18mm;font-size:.8em">meterai 6000</td><td></td></tr>
+    <tr><td style="height:14mm"></td><td class="ct b" style="vertical-align:bottom">Kepala Cabang</td></tr>
+  </table>
+  <table style="margin-top:5mm;width:104mm;border:.8pt solid #000">
+    <tr><td class="ct" style="border-bottom:.8pt solid #000;padding:.6mm" colspan="3">KONFIRMASI CUSTOMER</td></tr>
+    ${["Konfirmasi Ke","Tgl Konfirmasi","Jam Konfirmasi","Hasil Konfirmasi","Nama dan Paraf"].map(x=>
+      `<tr><td style="width:32mm;padding:.6mm 1.5mm">${x}</td><td style="width:4mm">:</td><td><span class="dot">&nbsp;</span></td></tr>`).join("")}
+    <tr><td colspan="2"></td><td class="rt" style="padding-right:2mm">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+  </table>`,"padding-top:10mm");
+}
+
+/* ---------- 5. BEDA DATA STNK/BPKB ---------- */
+function dokBedaStnk(d){
+  return lembar("serif",`
+  <div class="jd u" style="font-size:1.2em;margin-bottom:4mm">SURAT PERNYATAAN PERBEDAAN DATA STNK/BPKB</div>
+  <div>Yang bertanda tangan di bawah ini:</div>
+  <table class="iso" style="margin:3mm 0 0 26mm">
+    ${brs("Nama",d.namaSPK,26)}${brs("Alamat",d.alamatPemohon,26)}
+    <tr><td style="height:2mm"></td></tr>
+    ${brs("No.KTP",d.ktpPemohon,26)}${brs("No Telp",d.wa,26)}
+  </table>
+  <div style="margin-top:4mm">Menyatakan bahwa atas unit kendaraan yang saya beli di PT Astra Daihatsu International Cabang ${esc(PENGATURAN.kota)}<br>Dengan data sebagai berikut:</div>
+  <table class="iso" style="margin:3mm 0 0 26mm">
+    ${brs("Merek","DAIHATSU",26)}${brs("Model/Type",d.type,26)}${brs("No. Rangka",d.rangka,26)}
+    ${brs("No. Mesin",d.mesin,26)}${brs("Warna",d.warna,26)}${brs("Tahun",d.thn,26)}
+  </table>
+  <div style="margin-top:4mm">Untuk data STNK/BPKB nya diatasnamakan sebagai berikut:</div>
+  <table class="iso" style="margin:3mm 0 0 26mm">
+    ${brs("Atas Nama",d.namaSTNK,26)}${brs("No KTP",d.ktpSTNK,26)}${brs("Alamat",d.alamatSTNK,26)}
+    <tr><td style="height:2mm"></td></tr>
+    ${brs("No Telp",d.wa,26)}
+  </table>
+  <div style="margin-top:4mm">Demikian surat pernyataan ini dibuat tanpa adanya paksaan dari pihak manapun, untuk dapat dipergunakan<br>sebagaimana mestinya</div>
+  <div style="margin-top:5mm;width:82mm;border-bottom:1pt solid #000"><span style="margin-left:26mm" class="b">${tglID(d.tglPlanDO,"singkat4")||hariIni("singkat4")}</span></div>
+  <table style="width:100%;margin-top:4mm">
+    <tr><td class="ct" style="width:33%">Menyatakan</td><td class="ct" style="width:34%">Mengetahui</td><td style="width:33%"></td></tr>
+    <tr><td style="height:24mm"></td><td></td><td></td></tr>
+    <tr><td class="ct b">${esc(d.namaSPK)}</td><td class="ct b">${esc(PENGATURAN.adh)}</td><td class="ct b">${esc(PENGATURAN.kacab)}</td></tr>
+    <tr><td class="ct" style="font-size:.85em">CUSTOMER</td><td class="ct" style="font-size:.85em">ADH</td><td class="ct" style="font-size:.85em">Kepala Cabang</td></tr>
+  </table>`,"padding-top:10mm");
+}
+
+/* ---------- 6. BEDA TANDA TANGAN KTP ---------- */
+function dokBedaTtd(d){
+  const g=(l,v)=>`<tr><td style="width:44mm;padding:1.2mm 0">${l}</td><td style="width:4mm">:</td>
+    <td><span class="dot">${v?`<span class="b">${esc(v)}</span>`:"&nbsp;"}</span></td></tr>`;
+  return lembar("sans",`
+  <div class="jd" style="color:#1330d6;font-size:1.7em;line-height:1.15;margin:2mm 12mm 0 12mm">SURAT PERNYATAAN PERBEDAAN TANDA TANGAN DI KTP</div>
+  <div style="border-bottom:.8pt solid #9aa7bd;margin:4mm 4mm 5mm 4mm"></div>
+  <div style="margin-left:4mm">Saya yang bertanda tangan di bawah ini:</div>
+  <table class="iso" style="margin:4mm 4mm 0 4mm;width:150mm">
+    ${g("Nama",d.namaSPK)}${g("Tempat/Tanggal Lahir",d.ttlCust)}${g("NIK",d.ktpPemohon)}${g("Alamat",d.alamatPemohon)}
+  </table>
+  <div style="margin:4mm 4mm 0 4mm">Dengan ini menyatakan bahwa terdapat perbedaan tanda tangan yang tercantum pada Kartu
+  Tanda Penduduk (KTP) saya dengan tanda tangan yang biasa saya gunakan dalam dokumen lainnya.</div>
+  <div style="margin:2mm 4mm 0 4mm">Perbedaan tersebut bukan disebabkan oleh unsur pemalsuan atau tindak
+  kriminal, melainkan terjadi karena alasan, ${d.alasanTTD?`<span class="b">${esc(d.alasanTTD)}</span>`:""}</div>
+  <div style="border-bottom:.8pt solid #9aa7bd;margin:5mm 4mm 5mm 4mm"></div>
+  <div style="margin:0 4mm">Saya menyatakan bahwa tanda tangan yang tercantum di dokumen-dokumen resmi lainnya dan
+  yang saya gunakan saat ini adalah sah dan merupakan tanda tangan saya yang sebenarnya.</div>
+  <div style="margin:4mm 4mm 0 4mm">Demikian surat pernyataan ini saya buat dengan sebenar-benarnya untuk dipergunakan
+  sebagaimana mestinya.</div>
+  <table style="margin:8mm 0 0 4mm"><tr>
+    <td style="width:24mm;border-bottom:.8pt solid #000">&nbsp;</td><td style="width:5mm;text-align:center">,</td>
+    <td style="width:36mm;border-bottom:.8pt solid #000" class="ct">${esc(hariIni("panjang"))}</td></tr></table>
+  <table style="width:100%;margin-top:4mm">
+    <tr><td class="ct" style="width:40%">Dibuat Oleh,</td><td class="ct" style="width:30%">Disetujui Oleh,</td><td style="width:30%"></td></tr>
+    <tr><td style="height:28mm"></td><td></td><td></td></tr>
+    <tr><td class="ct">&nbsp;</td><td class="ct b u">${esc(d.ss)}</td><td class="ct b u">${esc(PENGATURAN.kacab)}</td></tr>
+    <tr><td class="ct"><span style="display:inline-block;border-top:.8pt solid #000;min-width:60mm">Customer</span></td>
+        <td class="ct">Supervisor</td><td class="ct">Kepala Cabang</td></tr>
+  </table>`,"padding-top:8mm");
+}
+
+/* ---------- 7. SURAT PERNYATAAN AGEN ---------- */
+function dokAgen(d){
+  const g=(l,v,pre)=>`<tr><td style="width:44mm;padding:1.6mm 0">${l}</td><td style="width:4mm">:</td>
+    <td>${pre||""}${v?`<span class="b">${esc(v)}</span>`:"&nbsp;"}</td></tr>`;
+  const kotakKonf=t=>`<table style="width:74mm;border:.8pt solid #000">
+    <tr><td class="ct b" style="border-bottom:.8pt solid #000;padding:.8mm">${t}</td></tr>
+    <tr><td style="padding:1mm 2mm">
+      <table style="width:100%">${["Konfirmasi ke","Tgl konfirmasi","Jam konfirmasi","Hasil konfirmasi","Nama &amp; Paraf"].map(x=>
+        `<tr><td style="width:30mm;padding:.5mm 0;white-space:nowrap">${x}</td><td style="width:4mm">:</td><td></td></tr>`).join("")}</table>
+      <div style="height:8mm"></div>
+      <div style="border-bottom:.8pt solid #000;width:30mm;margin-left:auto"></div>
+    </td></tr></table>`;
+  return lembar("sans",`
+  <div class="jd" style="font-size:1.5em;margin-bottom:5mm">SURAT PERNYATAAN</div>
+  <div style="margin-left:2mm">Saya yang bertanda tangan dibawah ini</div>
+  <table class="iso" style="margin:4mm 0 0 2mm;width:170mm">
+    ${g("Nama",d.namaSPK)}${g("Alamat",d.alamatPemohon)}<tr><td style="height:2mm"></td></tr>${g("No Telpon",d.wa)}
+  </table>
+  <div style="margin:5mm 2mm 0 2mm">Dengan ini menyatakan bahwa saya telah melakukan pembayaran uang muka/pelunasan pembelian
+  unit sebagai berikut:</div>
+  <table class="iso" style="margin:4mm 0 0 2mm;width:170mm">
+    ${g("Agen",d.agen)}${g("Nama Agen/Toko",d.agenToko)}${g("Nama Akun Transfer",d.agenAkun)}${g("Alamat",d.agenAlamat)}
+    ${g("Nominal",rp(d.agenNominal),"Rp. &nbsp;")}${g("Tanggal",tglID(d.agenTgl,"harispasi"))}
+  </table>
+  <div style="margin:5mm 2mm 0 2mm">Adapun surat pernyataan ini saya buat untuk digunakan sebagaimana mestinya.</div>
+  <table style="margin:6mm 0 0 6mm"><tr>
+    <td style="width:26mm;border-bottom:.8pt solid #000">&nbsp;</td><td style="width:5mm" class="ct">,</td>
+    <td style="width:40mm;border-bottom:.8pt solid #000" class="ct">${esc(hariIni("harispasi"))}</td></tr></table>
+  <table style="width:100%;margin-top:2mm">
+    <tr><td style="width:50%"></td><td class="ct" style="font-style:italic">Pemilik Outlet/Agen</td></tr>
+    <tr><td style="padding:6mm 0 0 14mm;font-style:italic;font-size:.85em">(meterai 10.000)</td><td></td></tr>
+    <tr><td style="height:12mm"></td><td></td></tr>
+    <tr><td class="ct"><span style="display:inline-block;border-top:.8pt solid #000;min-width:56mm;font-style:italic">Nama Customer</span></td>
+        <td class="ct"><span style="display:inline-block;border-top:.8pt solid #000;min-width:56mm;font-style:italic">Nama Pemilik Outlet</span></td></tr>
+  </table>
+  <table style="width:100%;margin-top:6mm"><tr>
+    <td style="width:50%">${kotakKonf("Konfirmasi Customer by SS")}</td>
+    <td>${kotakKonf("Konfirmasi Customer by Admin")}</td></tr></table>
+  <div style="margin:5mm 2mm 0 2mm;font-size:.9em">Lampiran:</div>
+  <ol style="margin:1mm 0 0 16mm;padding:0;font-size:.9em">
+    <li>Bukti transfer</li><li>Ktp customer</li><li>Foto Outlet Agen/Toko</li><li>Foto Spanduk Agen/Toko</li>
+    <li>Bukti Identitas Agen -&gt; menunjukkan nomor register/identitas serta alamat</li></ol>`,"padding-top:8mm");
+}
+
+/* ---------- 8. INTERNAL MEMO ---------- */
+function dokMemo(d){
+  const g=(l,v)=>`<tr><td style="width:32mm;padding:.8mm 0">${l}</td><td style="width:4mm">:</td>
+    <td>${v?`<span class="b">${esc(v)}</span>`:"&nbsp;"}</td></tr>`;
+  const kawil=esc(PENGATURAN.kawil);
+  return lembar("sans",`
+  <div class="jd" style="font-size:1.55em">INTERNAL MEMO</div>
+  <div class="jd" style="font-size:1.12em;font-weight:normal">APPROVAL PERBEDAAN NAMA PEMESAN DAN NAMA STNK/BPKB</div>
+  <div class="jd" style="font-size:1.12em;font-weight:normal">(tidak dalam 1 KK)</div>
+  <div style="border-bottom:1.6pt solid #000;margin:1.5mm 0 6mm 0"></div>
+  <div class="rt" style="margin-right:6mm">NO: ${esc(d.noMemo||"")}&nbsp;</div>
+  <div style="margin-top:6mm"><span class="b">Kepada Yth.</span><br><span class="b">Bpk. ${kawil} – Kepala Wilayah ${esc(PENGATURAN.wilayah)}</span><br>Di Tempat</div>
+  <div style="margin-top:5mm">Dengan hormat,<br>Bersama ini kami mengajukan approval pembukaan DO unit dengan kondisi adanya perbedaan data<br>
+  antara nama pemesan dan nama STNK/BPKB yang tidak dalam 1 Kartu Keluarga (KK) sebagai berikut :</div>
+  <table class="iso" style="margin-top:5mm;width:170mm">
+    ${g("No SPK",d.noSPK)}${g("Model/Type",d.type)}${g("Nama Pemesan",d.namaSPK)}${g("Nama STNK/BPKB",d.namaSTNK)}${g("Alasan Perbedaan",d.alasanBeda)}
+  </table>
+  <div style="margin-top:5mm">Demikian Internal Memo Approval Perbedaan Nama Pemesan dan Nama STNK/BPKB (tidak dalam 1 KK)<br>dibuat dengan benar.</div>
+  <div style="margin-top:5mm">Terima Kasih</div>
+  <div>${esc(PENGATURAN.kota)}, &nbsp; ${hariIni("hari")}</div>
+  <table style="width:100%;margin-top:4mm">
+    <tr><td style="width:50%;padding-left:6mm">Diajukan Oleh</td><td class="ct">Disetujui Oleh</td></tr>
+    <tr><td style="height:26mm"></td><td></td></tr>
+    <tr><td style="padding-left:6mm"><span class="b" style="display:inline-block;border-bottom:.8pt solid #000">${esc(PENGATURAN.kacab)}</span><div>Kepala Cabang</div></td>
+        <td class="ct"><span class="b u">${kawil}</span><div>Kepala Wilayah</div></td></tr>
+  </table>`,"padding-top:8mm");
+}
+
+/* ---------- 9. PENGEMBALIAN LEBIH BAYAR ---------- */
+function dokLebih(d){
+  const tot=angka(d.bayar1)+angka(d.bayar2)+angka(d.bayar3)+angka(d.diskon);
+  const harus=angka(d.um), lebih=Math.max(tot-harus,0);
+  const g=(l,v,garis)=>`<tr><td style="width:44mm;padding:1.1mm 0">${l}</td><td style="width:4mm">:</td>
+    <td style="width:8mm">Rp.</td><td style="width:46mm;${garis?"border-bottom:1pt dotted #000;":""}">${v?`<span class="b">${esc(v)}</span>`:"&nbsp;"}</td></tr>`;
+  return lembar("serif",`
+  <div>Kepada Yth &nbsp;:</div>
+  <div>PT. ASTRA INTERNATIONAL-DSO, Tbk</div>
+  <div>${esc(PENGATURAN.alamatCabang)}</div>
+  <div class="u">${esc((PENGATURAN.kota||"").toUpperCase())}</div>
+  <div class="b u" style="margin-top:5mm">HAL : Pengembalian Lebih Bayar</div>
+  <div style="margin-top:5mm">Dengan hormat,</div>
+  <div style="margin-top:4mm">Sehubungan dengan adanya kelebihan pembayaran yang kami lakukan dengan perincian<br>sbb :</div>
+  <table class="iso" style="margin:1mm 0 0 22mm">
+    ${g("Pembayaran ke I",rp(d.bayar1))}
+    ${g("Pembayaran ke II",rp(d.bayar2))}
+    ${g("Pembayaran ke III",rp(d.bayar3))}
+    ${g("Subsidi / Cash Back",rp(d.diskon),1)}
+    ${g("TOTAL",rp(tot),1)}
+    ${g("Uang Muka Seharusnya",rp(harus),1)}
+    ${g("Lebih Bayar",rp(lebih))}
+  </table>
+  <div style="margin-top:4mm">Mohon kelebihan pembayaran tersebut dapat di transfer ke rekening :</div>
+  <table class="iso" style="margin:4mm 0 0 22mm">
+    ${brs("Nama",d.namaSPK,30)}<tr><td style="height:2mm"></td></tr>${brs("Bank","",30)}${brs("Nomor Rekening","",30)}
+  </table>
+  <div style="margin-top:4mm">Demikian, Terima kasih</div>
+  <div style="margin-top:4mm">${esc(PENGATURAN.kota)}, &nbsp;&nbsp; ${hariIni("panjang")}</div>
+  <table style="width:100%;margin-top:5mm">
+    <tr><td style="width:55%">Hormat kami,</td><td>Diketahui,</td></tr>
+    <tr><td style="height:26mm"></td><td></td></tr>
+    <tr><td><span style="display:inline-block;border-bottom:1pt dotted #000;min-width:74mm" class="b">${esc(d.namaSPK)}</span></td>
+        <td style="vertical-align:bottom">Kepala Cabang</td></tr>
+  </table>
+  <div style="margin-top:8mm">Lampiran :<br>Kwitansi bermaterai sesuai ketentuan<br>Foto Copy KTP</div>`,"padding-top:12mm");
+}
+
+const PEMBUAT={checklist:dokChecklist,pdi:dokPdi,kuasa:dokKuasa,alih:dokAlih,bedaStnk:dokBedaStnk,
+  bedaTtd:dokBedaTtd,agenSurat:dokAgen,memo:dokMemo,lebih:dokLebih};
+
+/* ================= pratinjau & cetak ================= */
+let zoom=0;
+function bangunPratinjau(){
+  const d=ambilData();
+  const pilih=$$("#pilihDok input:checked").map(x=>x.value);
+  el("pvInner").innerHTML=pilih.map(k=>PEMBUAT[k]?PEMBUAT[k](d):"").join("")||
+    '<div class="kosong" style="background:#fff;border-radius:8px">Belum ada lembar yang dipilih.</div>';
+  pasSatuHalaman(); paskan();
+}
+function pasSatuHalaman(){
+  const maxH=287/25.4*96-4;
+  $$("#pvInner .sheet").forEach(sh=>{
+    const isi=sh.querySelector(".isi"); if(!isi)return;
+    let f=1,g=0; sh.style.setProperty("--fk","1");
+    while(isi.scrollHeight>maxH&&f>0.6&&g++<34){f-=0.025;sh.style.setProperty("--fk",f.toFixed(3));}
+  });
+}
+function paskan(){
+  const w=el("pvWrap").clientWidth-20;
+  const s=zoom||Math.min(1,w/756);
+  el("pvInner").style.transform="scale("+s+")";
+  el("pvInner").style.width="756px";
+  el("pvWrap").style.height=Math.min(el("pvInner").scrollHeight*s+20,window.innerHeight*0.68)+"px";
+}
+
+/* ================= kirim ke Google Sheet ================= */
+function barisUntukSheet(d){
+  return KOLOM.map(k=>{
+    let v=d[k]==null?"":d[k];
+    if(TGL_KOLOM.includes(k))return tglID(v,"pendek");
+    if(NUMERIK.includes(k))return v===""?"":angka(v);
+    return v;});
+}
+async function kirimSheet(){
+  const url=(el("urlWA").value||"").trim();
+  if(!url){toast("Isi dulu URL Web App di tab Pengaturan",1);pindah("set");return;}
+  const d=ambilData();
+  if(!d.namaSPK){toast("Nama SPK (pemohon) belum diisi",1);return;}
+  el("bKirim").disabled=true;el("bKirim").textContent="Mengirim…";
+  try{
+    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify({aksi:"tambah",kolom:KOLOM,baris:barisUntukSheet(d)})});
+    const j=await r.json();
+    if(j&&j.ok){toast("Masuk ke Sheet, baris "+j.baris);simpanForm(true);}
+    else toast("Ditolak: "+((j&&j.pesan)||"tidak diketahui"),1);
+  }catch(e){toast("Gagal kirim — cek URL & izin Web App",1);}
+  el("bKirim").disabled=false;el("bKirim").textContent="Kirim ke Sheet";
+}
+
+/* ================= simpan & riwayat ================= */
+function simpanForm(diam){
+  const d=ambilData();
+  if(!d.namaSPK&&!d.noSPK){if(!diam)toast("Isi minimal nama atau nomor SPK",1);return;}
+  const now=new Date().toISOString();
+  if(idAktif){const i=RIWAYAT.findIndex(x=>x.id===idAktif);if(i>=0)RIWAYAT[i]={id:idAktif,waktu:now,data:d};}
+  else{idAktif="r"+Date.now();RIWAYAT.unshift({id:idAktif,waktu:now,data:d});}
+  simpanRiwayatLokal();gambarRiwayat();
+  if(!diam)toast("Tersimpan");
+}
+function gambarRiwayat(){
+  const w=el("daftarRiw");
+  if(!RIWAYAT.length){w.innerHTML='<div class="kosong">Belum ada isian tersimpan.</div>';return;}
+  w.innerHTML=RIWAYAT.map(r=>`<div class="riw"><div><b>${esc(r.data.namaSPK||"(tanpa nama)")}</b>
+    <small>${esc(r.data.type||"")} · SPK ${esc(r.data.noSPK||"-")} · ${new Date(r.waktu).toLocaleString("id-ID")}</small></div>
+    <button class="btn alt kecil" data-buka="${r.id}">Buka</button>
+    <button class="btn alt kecil" data-hapus="${r.id}">Hapus</button></div>`).join("");
+}
+function formBaru(){
+  SEMUA_ID().forEach(id=>{const n=el(id);if(n.type==="checkbox"){if(id!=="stokSulut")n.checked=false;}else n.value="";});
+  el("qty").value="1"; el("tipeCust").value="PERORANGAN";
+  const ss=pecah(DAFTAR_SS); if(ss.length){el("ss").value=ss[0].nama;el("npkSS").value=ss[0].npk;}
+  idAktif=null; hitung(); kunciAlih(); isiType(); toast("Formulir kosong siap diisi");
+}
+
+/* ================= navigasi & event ================= */
+function pindah(p){
+  $$("nav button").forEach(b=>b.classList.toggle("on",b.dataset.p===p));
+  $$(".panel").forEach(s=>s.classList.toggle("on",s.id==="p-"+p));
+  el("barForm").style.display=(p==="form")?"flex":"none";
+  el("barCetak").style.display=(p==="cetak")?"flex":"none";
+  if(p==="cetak")bangunPratinjau();
+  if(p==="data")gambarRiwayat();
+  window.scrollTo(0,0);
+}
+function pasangEvent(){
+  $$("nav button").forEach(b=>b.onclick=()=>pindah(b.dataset.p));
+  el("bBaru").onclick=formBaru;
+  el("bSimpan").onclick=()=>simpanForm(false);
+  el("bKirim").onclick=kirimSheet;
+  el("bKembali").onclick=()=>pindah("form");
+  el("bCetak").onclick=()=>{bangunPratinjau();setTimeout(()=>window.print(),150);};
+  el("bSemua").onclick=()=>{$$("#pilihDok input").forEach(x=>{x.checked=true;x.closest(".chip").classList.add("on");});bangunPratinjau();};
+  el("bTdkSatu").onclick=()=>{$$("#pilihDok input").forEach(x=>{x.checked=false;x.closest(".chip").classList.remove("on");});bangunPratinjau();};
+  el("pilihDok").onchange=e=>{e.target.closest(".chip").classList.toggle("on",e.target.checked);bangunPratinjau();};
+  el("bZoomIn").onclick=()=>{zoom=(zoom||1)*1.2;paskan();};
+  el("bZoomOut").onclick=()=>{zoom=(zoom||1)/1.2;paskan();};
+  el("bZoomPas").onclick=()=>{zoom=0;paskan();};
+  window.addEventListener("resize",()=>{if(!zoom)paskan();});
+
+  el("stnkSama").onchange=e=>{if(e.target.checked){el("namaSTNK").value=el("namaSPK").value;el("alamatSTNK").value=el("alamatPemohon").value;
+    el("ktpSTNK").value=el("ktpPemohon").value;el("kerjaSTNK").value=el("kerjaPemohon").value;}
+    el("chipSama").classList.toggle("on",e.target.checked);};
+  el("sales").onchange=e=>{const s=pecah(DAFTAR_SALES).find(x=>x.nama===e.target.value);if(s)el("npk").value=s.npk;};
+  el("ss").onchange=e=>{const s=pecah(DAFTAR_SS).find(x=>x.nama===e.target.value);if(s)el("npkSS").value=s.npk;};
+  el("pengalihan").onchange=kunciAlih;
+  el("kodePaket").onchange=hitung;
+  el("stokSulut").onchange=e=>{el("chipSulut").classList.toggle("on",e.target.checked);isiType();};
+  el("bMuatStok").onclick=()=>muatStok(false);
+  el("bManual").onclick=()=>ubahManual(!manualUnit);
+  pasangEventUnit();
+  ["otr","diskon","um","cashKredit"].forEach(id=>el(id).addEventListener("input",hitung));
+  document.addEventListener("input",e=>{
+    if(e.target.classList&&e.target.classList.contains("rp")){
+      const p=e.target.selectionStart,l=e.target.value.length;
+      e.target.value=rp(e.target.value);
+      const dd=e.target.value.length-l;try{e.target.setSelectionRange(p+dd,p+dd);}catch(x){}
+      hitung();}});
+
+  el("daftarRiw").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+    if(b.dataset.buka){const r=RIWAYAT.find(x=>x.id===b.dataset.buka);if(r){idAktif=r.id;isiType();pasangData(r.data);pindah("form");toast("Data dimuat");}}
+    if(b.dataset.hapus){RIWAYAT=RIWAYAT.filter(x=>x.id!==b.dataset.hapus);if(idAktif===b.dataset.hapus)idAktif=null;simpanRiwayatLokal();gambarRiwayat();toast("Dihapus");}};
+  el("bEkspor").onclick=()=>{
+    const blob=new Blob([JSON.stringify({riwayat:RIWAYAT,pengaturan:PENGATURAN,sales:DAFTAR_SALES,ss:DAFTAR_SS,leasing:DAFTAR_LEASING},null,1)],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="cadangan-form-do.json";a.click();};
+  el("bImpor").onclick=()=>el("fileImpor").click();
+  el("fileImpor").onchange=e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();
+    fr.onload=()=>{try{const j=JSON.parse(fr.result);
+      if(j.riwayat){RIWAYAT=j.riwayat.concat(RIWAYAT);simpanRiwayatLokal();}
+      if(j.pengaturan){PENGATURAN=Object.assign({},SET_BAWAAN,j.pengaturan);localStorage.setItem("do2_set",JSON.stringify(PENGATURAN));}
+      if(j.sales){DAFTAR_SALES=j.sales;localStorage.setItem("do2_sales",DAFTAR_SALES);}
+      if(j.ss){DAFTAR_SS=j.ss;localStorage.setItem("do2_ss",DAFTAR_SS);}
+      if(j.leasing){DAFTAR_LEASING=j.leasing;localStorage.setItem("do2_leasing",DAFTAR_LEASING);}
+      isiPilihan();isiType();gambarRiwayat();toast("Cadangan dimuat");}catch(x){toast("Berkas tidak terbaca",1);}};
+    fr.readAsText(f);};
+  el("bSimpanURL").onclick=()=>{localStorage.setItem("do2_url",el("urlWA").value.trim());toast("URL disimpan");};
+  el("bUji").onclick=async()=>{const u=el("urlWA").value.trim();if(!u){toast("URL masih kosong",1);return;}
+    try{const r=await fetch(u+(u.includes("?")?"&":"?")+"aksi=cek");const j=await r.json();
+      toast(j.ok?("Tersambung — baris terisi: "+j.baris):"Balasan tidak dikenal",!j.ok);}
+    catch(e){toast("Tidak tersambung — cek deploy & akses 'Siapa saja'",1);}};
+  el("bSalinKode").onclick=async()=>{try{await navigator.clipboard.writeText(el("kodeGS").textContent);toast("Kode Apps Script tersalin");}
+    catch(e){toast("Salin manual dari kotak di bawah",1);}};
+  el("bSimpanSet").onclick=()=>{
+    PENGATURAN=Object.assign({},PENGATURAN,{kacab:el("setKacab").value,adh:el("setADH").value,kawil:el("setKawil").value,
+      wilayah:el("setWilayah").value,cabang:el("setCabang").value,kodeCabang:el("setKodeCabang").value,
+      alamatCabang:el("setAlamatCabang").value,kota:el("setKota").value});
+    localStorage.setItem("do2_set",JSON.stringify(PENGATURAN));toast("Pengaturan disimpan");};
+  el("bSimpanSales").onclick=()=>{DAFTAR_SALES=el("setSales").value;localStorage.setItem("do2_sales",DAFTAR_SALES);isiPilihan();pasangEventUnit();toast("Daftar salesman disimpan");};
+  el("bSimpanSS").onclick=()=>{DAFTAR_SS=el("setSSList").value;localStorage.setItem("do2_ss",DAFTAR_SS);isiPilihan();pasangEventUnit();toast("Daftar SS disimpan");};
+  el("bSimpanLeasing").onclick=()=>{DAFTAR_LEASING=el("setLeasing").value;localStorage.setItem("do2_leasing",DAFTAR_LEASING);isiPilihan();pasangEventUnit();toast("Daftar leasing disimpan");};
+  el("bSimpanStok").onclick=()=>{
+    PENGATURAN.idStok=idSpreadsheet(el("urlStok").value)||SET_BAWAAN.idStok;
+    PENGATURAN.sheetStok=el("namaSheetStok").value.trim()||"Stok";
+    localStorage.setItem("do2_set",JSON.stringify(PENGATURAN));muatStok(false);};
+  el("bStokCsv").onclick=()=>el("fileStok").click();
+  el("fileStok").onchange=e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();
+    fr.onload=()=>{const b=petakanStok(parseCSV(fr.result));
+      if(b.length){simpanStok(b,"Sumber: berkas CSV.");toast("Stok dari CSV: "+b.length+" unit");}
+      else toast("Kolom CSV tidak dikenali",1);};
+    fr.readAsText(f);};
+}
+
+/* ================= mulai ================= */
+muatLokal();
+isiPilihan();
+pasangEvent();
+isiType();
+statusStok("");
+el("kodeGS").textContent=el("srcGS").textContent.trim();
+hitung(); kunciAlih(); gambarRiwayat();
+if(!STOK.length||Date.now()-STOK_WAKTU>6*3600*1000)muatStok(true);
+
+/* ================= pemasangan (PWA) ================= */
+(function(){
+  const berdiri=()=>window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
+  const ios=document.documentElement.classList.contains("ios");
+  let tawaran=null;
+  function pesan(){
+    const i=el("infoPasang"); if(!i)return;
+    if(berdiri()){i.innerHTML="Aplikasi sudah terpasang dan sedang berjalan sebagai aplikasi. Isian tetap tersimpan walau tanpa sinyal.";el("bPasang").hidden=true;return;}
+    if(tawaran){i.innerHTML="Aplikasi ini bisa dipasang di layar utama. Tekan tombol di bawah.";el("bPasang").hidden=false;return;}
+    if(ios){i.innerHTML="Di iPhone/iPad: tekan tombol <b>Bagikan</b> di Safari, lalu pilih <b>Add to Home Screen</b>.";el("bPasang").hidden=true;return;}
+    i.innerHTML="Di Android (Chrome): menu <b>⋮</b> → <b>Instal aplikasi</b> / <b>Tambahkan ke layar Utama</b>. Di komputer: ikon pasang di ujung kanan kolom alamat.";
+    el("bPasang").hidden=true;
+  }
+  window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();tawaran=e;pesan();});
+  window.addEventListener("appinstalled",()=>{tawaran=null;toast("Aplikasi terpasang");pesan();});
+  const bp=el("bPasang");
+  if(bp)bp.onclick=async()=>{ if(!tawaran)return; tawaran.prompt();
+    try{const r=await tawaran.userChoice; toast(r.outcome==="accepted"?"Sedang dipasang…":"Pemasangan dibatalkan");}catch(e){}
+    tawaran=null; pesan(); };
+  const bu=el("bPerbarui");
+  if(bu)bu.onclick=async()=>{
+    if(!("serviceWorker" in navigator)){toast("Peramban ini tidak mendukung pembaruan otomatis",1);return;}
+    try{const r=await navigator.serviceWorker.getRegistration();
+      if(!r){toast("Belum terpasang di perangkat ini",1);return;}
+      await r.update(); toast("Sudah diperiksa — tutup lalu buka lagi bila ada versi baru");}
+    catch(e){toast("Gagal memeriksa pembaruan",1);}
+  };
+  pesan();
+  if("serviceWorker" in navigator&&location.protocol!=="file:")
+    window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+})();
+</script>
+</body>
+</html>
